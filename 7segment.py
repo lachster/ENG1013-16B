@@ -142,25 +142,6 @@ def main(a,b,c,d):   # to show multiple digits or charecters on the display at o
         display(d)
         display('~')
         time.sleep(delay)
-store = [0]
-def callback(data):
-    value = data[2]
-    store[0] = value
-    
-
-    print(f'Distance in cm: {store[0]}')
-    
-    return (data)
-
-def ultrasonic():
-    while True:
-               
-        # indices into callback data
-        trigger_pin = 13
-        echo_pin = 12
-        scrolling_message_left(str(store[0]))
-        print(str(store[0]))
-        myArduino.set_pin_mode_sonar(trigger_pin, echo_pin, callback )
         
 def scrolling_message_left(message): # to show a message on the display for set number of secconds left alligned
     q = 0
@@ -193,7 +174,7 @@ def scrolling_message_right(message): # to show a message on the display for set
         q = q + 1
 
 setup()
-ultrasonic()
+#ultrasonic()
 
 
 
