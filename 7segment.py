@@ -174,11 +174,6 @@ def scrolling_message_right(message): # to show a message on the display for set
         q = q + 1
 
 setup()
-#ultrasonic()
-
-
-
-
 
 introMessage = ['ENG','1013','IS','EAZY']
 z = 0
