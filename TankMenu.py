@@ -1,7 +1,8 @@
 from re import I
 import time
+from tkinter import Image
 import matplotlib.pyplot as plt
-import matplotlib.image as mping
+from PIL import Image
 from pymata4 import pymata4
 
 pin = 0000
@@ -15,7 +16,7 @@ def pin_entry():
             if userpin == pin:
                 break;
             else:
-                print("Incorrect Passcode. Please try again.")
+                print("Incorrect Passcode. Please try again. (For the sake of ease: 0000 or 0)")
                 counter = counter + 1
                 if counter == 5:
                     print("You've passed 5 attempts...")
@@ -26,9 +27,9 @@ def pin_entry():
     display_main_menu()
 
 def display_main_menu():
-    print("\033[1;36;40m Welcome back to the Tank Monitoring System.]")
+    print("\033[1;36;40m Welcome back to the Tank Monitoring System.")
     print("---------------------------------")
-    print("Select one of the following, with the number noted.")
+    print("\033[0;37;40m Select one of the following, with the number noted.")
     print("1. View current state.")
     print("2. View previous graphs.")
     print("3. Graph Generation.")
@@ -81,8 +82,8 @@ def view_current():
 
 def view_graph():
     i = int(input("Which Graph Iteration would you like to view? (denote with number of iteration): "))
-    image = mping.imread(f"Graph Iteration distance: {i}.png")
-    plt.imshow(image)
+    image = Image.open(f'Distance_Graph_{i}.png')
+    image.show()
 
 def graph_generation():
     ypoint = []
@@ -106,6 +107,7 @@ def graph_generation():
 
     def sonar_setup(board, triggerPin, echoPin):
         t = 0
+        it = 0
         while True:
             try:
                 time.sleep(1.0)
@@ -114,13 +116,13 @@ def graph_generation():
                 ypoint.append(num)
                 xpoint.append(t)
                 t = t + 1
-                if t % 30 == 0:
+                if t % 60 == 0:
+                    it = it + 1
                     plt.plot(xpoint, ypoint)
                     plt.ylabel("Distance (cm)")
                     plt.xlabel("Time")
-                    plt.title(f"Distance Graph: {t}")
-                    plt.savefig(f"Graph Iteration for distance: {t}.png")
-
+                    plt.title(f"Graph Iteration for distance: {t} seconds")
+                    plt.savefig(f"Distance_Graph_{it}.png")
 
                 print(num)
             except Exception:
