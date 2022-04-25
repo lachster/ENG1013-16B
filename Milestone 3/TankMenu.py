@@ -53,21 +53,21 @@ def display_main_menu(): # the main hub for all functions
 
 # depending on input, triggers certain function
     if choice == 1:
-        dview_current()
+        distance_view_current()
     elif choice == 2:
-        dview_lowest()
+        distance_view_lowest()
     elif choice == 3:
-        dview_graph()
+        distance_view_graph()
     elif choice == 4:
         dgraph_generation()
     elif choice == 5:
         temp_entry()
     elif choice == 6:
-        tgraph_generation()
+        temp_graph_generation()
     elif choice == 0:
         end_program()
 
-def dview_current(): # to view current distance, reading straight from Ultrasonic Sensor
+def distance_view_current(): # to view current distance, reading straight from Ultrasonic Sensor
     
     board = pymata4.Pymata4() #declare the board
     # declare the chosen digital pins
@@ -102,7 +102,7 @@ def dview_current(): # to view current distance, reading straight from Ultrasoni
     print("The current distance from sensor")
     sonar_setup(board, triggerPin, echoPin)
 
-def dview_lowest(): # the same as above, but now only showing the furthest distance from the sensor, hence, the lowest value
+def distance_view_lowest(): # the same as above, but now only showing the furthest distance from the sensor, hence, the lowest value
     board = pymata4.Pymata4()
     triggerPin = 9
     echoPin = 10
@@ -135,7 +135,7 @@ def dview_lowest(): # the same as above, but now only showing the furthest dista
     print("Note: the highest the number, the further away the liquid from the sensor.")
     sonar_setup(board, triggerPin, echoPin)
 
-def dview_graph(): # to view a certain iteration of graph (make sure to know which iteration)
+def distance_view_graph(): # to view a certain iteration of graph (make sure to know which iteration)
     i = int(input("Which Graph Iteration would you like to view? (denote with number of iteration): "))
     # if the chosen iteration exists...
     if f'Distance_Graph_{i}.png' == True: 
@@ -229,7 +229,7 @@ def temp_entry(): # current place holder, before actual temp sensor w/ thermisto
     print("Correspoding time values: ", timePoints)
     display_main_menu()
 
-def tgraph_generation(): # to generate scatter graph for temperature 
+def temp_graph_generation(): # to generate scatter graph for temperature 
     # using same set-lists from before
     global temp
     global timePoints
