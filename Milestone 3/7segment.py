@@ -91,7 +91,7 @@ def digit_decode(charecter): # decodes the charecter or digit into the segments 
     segmentvalue = int(stringPattern[7])
     myArduino.digital_write(segDP,segmentvalue)
 
-def setup(): # turns all needed pins on
+def arduino_setup(): # turns all needed pins on
     myArduino._set_pin_mode(segA,1 )
     myArduino._set_pin_mode(segB,1 )
     myArduino._set_pin_mode(segC,1 )
@@ -173,7 +173,7 @@ def scrolling_message_right(message): # to show a message on the display for set
         
         q = q + 1
 
-setup()
+arduino_setup()
 InntroMessage = ['HI']
 HighVolMessage = ['TANK','VOL','HIGH']
 LowVolMessage = ['TANK','VOL','LOW']
