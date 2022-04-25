@@ -8,10 +8,10 @@ from pymata4 import pymata4
 #set the conditions of the arduino () is the default 
 myArduino = pymata4.Pymata4()
 
-# delay between different digits shown (needed to adjust for flicker on display)
+# delay between different digits shown (needed to adjust for flicker on digit_decode)
 delay = 0.001
-displayTime = 2 # time for each thing to be show (in secconds) 
-# set the pins for the display to the correct outputs on arduino
+digit_decodeTime = 2 # time for each thing to be show (in secconds) 
+# set the pins for the digit_decode to the correct outputs on arduino
 # digits must be connected to PWM ports
 digit1 = 6 
 digit2 = 9 
@@ -72,7 +72,7 @@ charLookup = { # segment code for all charecters
     '-' : '00000010'
 }
 
-def display(charecter): # decodes the charecter or digit into the segments of the display
+def digit_decode(charecter): # decodes the charecter or digit into the segments of the display
     stringPattern = charLookup[charecter]
     segmentvalue = int(stringPattern[0])
     myArduino.digital_write(segA,segmentvalue)
@@ -106,55 +106,55 @@ def setup(): # turns all needed pins on
     myArduino._set_pin_mode(digit3,1 )
     myArduino._set_pin_mode(digit4,1 )
 
-def main(a,b,c,d):   # to show multiple digits or charecters on the display at once
+def four_digit_digit_decode(a,b,c,d):   # to show multiple digits or charecters on the display at once
     i = 0
     myArduino.digital_write(digit1,1 )
     myArduino.digital_write(digit2,1 )
     myArduino.digital_write(digit3,1 )
     myArduino.digital_write(digit4,1 )
-    while i < (displayTime/(18*delay)):
+    while i < (digit_decodeTime/(18*delay)):
         i += 1
         
 
         myArduino.digital_write(digit4,1 )
         myArduino.digital_write(digit1,0 )
-        display(a)
-        display('~')
+        digit_decode(a)
+        digit_decode('~')
         time.sleep(delay)
 
 
         myArduino.digital_write(digit1,1 )
         myArduino.digital_write(digit2,0 )
-        display(b)
-        display('~')
+        digit_decode(b)
+        digit_decode('~')
         time.sleep(delay)
 
 
         myArduino.digital_write(digit3,0 )
         myArduino.digital_write(digit2,1 )
-        display(c)
-        display('~')
+        digit_decode(c)
+        digit_decode('~')
         time.sleep(delay)
 
 
         myArduino.digital_write(digit4,0 )
         myArduino.digital_write(digit3,1 )
-        display(d)
-        display('~')
+        digit_decode(d)
+        digit_decode('~')
         time.sleep(delay)
         
 def scrolling_message_left(message): # to show a message on the display for set number of secconds left alligned
     q = 0
     while q < len(message):
         if len(message[q]) == 4:
-            main(message[q][0],message[q][1], message[q][2],message[q][3])        
+            four_digit_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
         elif len(message[q]) == 3:
-            main(message[q][0], message[q][1],message[q][2],'~')
+            four_digit_digit_decode(message[q][0], message[q][1],message[q][2],'~')
         elif len(message[q]) == 2:
-            main(message[q][0], message[q][1],'~','~')
+            four_digit_digit_decode(message[q][0], message[q][1],'~','~')
         elif len(message[q]) == 1:
-            main(message[q][0], '~','~','~')
-        time.sleep(displayTime/2)
+            four_digit_digit_decode(message[q][0], '~','~','~')
+        time.sleep(digit_decodeTime/2)
         
         q = q + 1
     
@@ -162,27 +162,26 @@ def scrolling_message_right(message): # to show a message on the display for set
     q = 0
     while q < len(message):
         if len(message[q]) == 4:
-            main(message[q][0],message[q][1], message[q][2],message[q][3])        
+            four_digit_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
         elif len(message[q]) == 3:
-            main('~',message[q][0], message[q][1],message[q][2])
+            four_digit_digit_decode('~',message[q][0], message[q][1],message[q][2])
         elif len(message[q]) == 2:
-            main('~','~',message[q][0], message[q][1])
+            four_digit_digit_decode('~','~',message[q][0], message[q][1])
         elif len(message[q]) == 1:
-            main('~','~','~',message[q][0])
-        time.sleep(displayTime/2)
+            four_digit_digit_decode('~','~','~',message[q][0])
+        time.sleep(digit_decodeTime/2)
         
         q = q + 1
 
 setup()
-
-introMessage = ['ENG','1013','IS','EAZY']
+InntroMessage = ['HI']
+HighVolMessage = ['TANK','VOL','HIGH']
+LowVolMessage = ['TANK','VOL','LOW']
+NormVolMessage = ['TANK','VOL','GOOD']
 z = 0
-scrolling_message_left(introMessage)
-displayTime = 0.1
-while True:
-    z += 1
-    c = [str(z)]
-    scrolling_message_right((c))
+scrolling_message_left(HighVolMessage)
+scrolling_message_left(LowVolMessage)
+scrolling_message_left(NormVolMessage)
 
 
 
