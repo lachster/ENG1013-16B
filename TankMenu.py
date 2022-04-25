@@ -131,6 +131,7 @@ def dview_lowest(): # the same as above, but now only showing the furthest dista
             except Exception:
                 board.shutdown()
     
+    print("The highest distance from sensor:")
     print("Note: the highest the number, the further away the liquid from the sensor.")
     sonar_setup(board, triggerPin, echoPin)
 
