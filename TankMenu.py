@@ -32,10 +32,11 @@ def display_main_menu(): # the main hub for all functions
     print("---------------------------------")
     print("\033[0;37;40m Select one of the following, with the number noted.")
     print("1. View current state.")
-    print("2. View previous graphs.")
-    print("3. Distance Graph Generation.")
-    print("4: Temperature Entry (placeholder).")
-    print("5: Temperature Graph Generation (placeholder).")
+    print("2. View lowest state (for refills)")
+    print("3. View previous graphs.")
+    print("4. Distance Graph Generation.")
+    print("5: Temperature Entry (placeholder).")
+    print("6: Temperature Graph Generation (placeholder).")
     print("0: Escape.")
 
     choice = -1 # user input will change this to whatever choice they declare
@@ -43,7 +44,7 @@ def display_main_menu(): # the main hub for all functions
     while True:
         try:
             choice = int(input("Make your decision. "))
-            if choice == 0 or choice == 1 or choice == 2 or choice == 3 or choice == 4 or choice == 5: # proving the choice is an actual choice
+            if choice == 0 or choice == 1 or choice == 2 or choice == 3 or choice == 4 or choice == 5 or choice == 6: # proving the choice is an actual choice
                 break;
             else: # if their declared 'choice' doesn't exist...
                 print("Make sure to choose only from the following.") 
@@ -54,17 +55,20 @@ def display_main_menu(): # the main hub for all functions
     if choice == 1:
         dview_current()
     elif choice == 2:
-        dview_graph()
+        dview_lowest()
     elif choice == 3:
-        dgraph_generation()
+        dview_graph()
     elif choice == 4:
-        temp_entry()
+        dgraph_generation()
     elif choice == 5:
+        temp_entry()
+    elif choice == 6:
         tgraph_generation()
     elif choice == 0:
         end_program()
 
 def dview_current(): # to view current distance, reading straight from Ultrasonic Sensor
+    
     board = pymata4.Pymata4() #declare the board
     # declare the chosen digital pins
     triggerPin = 9
@@ -91,10 +95,43 @@ def dview_current(): # to view current distance, reading straight from Ultrasoni
                 # denote 'num' as the 'store' value
                 num = sonar_report() 
                 # and print.
-                print(num)
+                print(num, 'cm')
             except Exception: # if exception were to occur...
                 board.shutdown()
     
+    print("The current distance from sensor")
+    sonar_setup(board, triggerPin, echoPin)
+
+def dview_lowest(): # the same as above, but now only showing the furthest distance from the sensor, hence, the lowest value
+    board = pymata4.Pymata4()
+    triggerPin = 9
+    echoPin = 10
+    store = [0]
+
+    distanceCm = 2
+
+    def sonar_callback(data):
+        value = data[distanceCm]
+        if value > store[0]:
+            store[0] = value
+        else:
+            store[0]
+        
+
+    def sonar_report():
+        return store[0]
+    
+    def sonar_setup(board, triggerPin, echoPin):
+        while True:
+            try:
+                time.sleep(1.0)
+                board.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
+                num = sonar_report()
+                print(num, "cm")
+            except Exception:
+                board.shutdown()
+    
+    print("Note: the highest the number, the further away the liquid from the sensor.")
     sonar_setup(board, triggerPin, echoPin)
 
 def dview_graph(): # to view a certain iteration of graph (make sure to know which iteration)
