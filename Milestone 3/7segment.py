@@ -10,7 +10,7 @@ myArduino = pymata4.Pymata4()
 
 # delay between different digits shown (needed to adjust for flicker on digit_decode)
 delay = 0.001
-digit_decodeTime = 2 # time for each thing to be show (in secconds) 
+displayTime = 2 # time for each thing to be show (in secconds) 
 # set the pins for the digit_decode to the correct outputs on arduino
 # digits must be connected to PWM ports
 digit1 = 6 
@@ -112,15 +112,15 @@ def four_digit_digit_decode(a,b,c,d):   # to show multiple digits or charecters 
     myArduino.digital_write(digit2,1 )
     myArduino.digital_write(digit3,1 )
     myArduino.digital_write(digit4,1 )
-    while i < (digit_decodeTime/(18*delay)):
+    while i < (displayTime/(18*delay)): #cycles the display a set number of times based on the set variable wich accounts for the delay time 
         i += 1
         
 
-        myArduino.digital_write(digit4,1 )
+        myArduino.digital_write(digit4,1 ) #turns next digit on and prevoius digit off
         myArduino.digital_write(digit1,0 )
-        digit_decode(a)
-        digit_decode('~')
-        time.sleep(delay)
+        digit_decode(a) # sends variable to the digit decode function
+        digit_decode('~') # clears the display to prevent bleeding of the previous digit onto the next
+        time.sleep(delay) #delay of set time between displaying digits to control brightness
 
 
         myArduino.digital_write(digit1,1 )
@@ -145,7 +145,7 @@ def four_digit_digit_decode(a,b,c,d):   # to show multiple digits or charecters 
         
 def scrolling_message_left(message): # to show a message on the display for set number of secconds left alligned
     q = 0
-    while q < len(message):
+    while q < len(message): # adjusts the variables sent to the four_digit_digit_decode based on the leangth of the input message and aligns it to the left
         if len(message[q]) == 4:
             four_digit_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
         elif len(message[q]) == 3:
@@ -154,7 +154,7 @@ def scrolling_message_left(message): # to show a message on the display for set 
             four_digit_digit_decode(message[q][0], message[q][1],'~','~')
         elif len(message[q]) == 1:
             four_digit_digit_decode(message[q][0], '~','~','~')
-        time.sleep(digit_decodeTime/2)
+        time.sleep(displayTime/2)
         
         q = q + 1
     
@@ -169,16 +169,15 @@ def scrolling_message_right(message): # to show a message on the display for set
             four_digit_digit_decode('~','~',message[q][0], message[q][1])
         elif len(message[q]) == 1:
             four_digit_digit_decode('~','~','~',message[q][0])
-        time.sleep(digit_decodeTime/2)
+        time.sleep(displayTime/2)
         
         q = q + 1
 
 arduino_setup()
-InntroMessage = ['HI']
+InntroMessage = ['HI'] # set messages to display
 HighVolMessage = ['TANK','VOL','HIGH']
 LowVolMessage = ['TANK','VOL','LOW']
 NormVolMessage = ['TANK','VOL','GOOD']
-z = 0
 scrolling_message_left(HighVolMessage)
 scrolling_message_left(LowVolMessage)
 scrolling_message_left(NormVolMessage)
