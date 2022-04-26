@@ -9,7 +9,7 @@ from pymata4 import pymata4
 myArduino = pymata4.Pymata4()
 
 # delay between different digits shown (needed to adjust for flicker on digit_decode)
-delay = 0.001
+delay = 0.0002
 displayTime = 2 # time for each thing to be show (in secconds) 
 # set the pins for the digit_decode to the correct outputs on arduino
 # digits must be connected to PWM ports
@@ -74,7 +74,7 @@ charLookup = { # segment code for all charecters
 
 def digit_decode(charecter): # decodes the charecter or digit into the segments of the display
     stringPattern = charLookup[charecter]
-    segmentvalue = int(stringPattern[0])
+    segmentvalue = int(stringPattern[0]) #sets the value of the pin based on the code from charLookup
     myArduino.digital_write(segA,segmentvalue)
     segmentvalue = int(stringPattern[1])
     myArduino.digital_write(segB,segmentvalue)
