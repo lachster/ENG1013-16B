@@ -199,7 +199,7 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
                     plt.plot(xpoint, ypoint)
                     # denote y and x axis labels
                     plt.ylabel("Distance (cm)")
-                    plt.xlabel("Time")
+                    plt.xlabel("Time (s)")
                     # denote title, marking the time past since start of graph generation
                     plt.title(f"Graph Iteration for distance: {t} seconds")
                     # denote save name, using iteration count, for recollection in 'View graph' tool
