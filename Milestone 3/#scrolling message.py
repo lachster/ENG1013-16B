@@ -13,7 +13,7 @@ myArduino = pymata4.Pymata4()
 
 # delay between different digits shown (needed to adjust for flicker on digit_decode)
 delay = 0.001
-displayTime = 0.5# time for each thing to be show (in secconds) 
+displayTime = 0.5 # time for each thing to be show (in secconds) 
 # set the pins for the digit_decode to the correct outputs on arduino
 # digits must be connected to PWM ports
 digit1 = 6 
@@ -110,7 +110,7 @@ def arduino_setup(): # turns all needed pins on
     myArduino._set_pin_mode(digit3,1 )
     myArduino._set_pin_mode(digit4,1 )
 
-def four_digit_digit_decode(a,b,c,d):   # to show multiple digits or charecters on the display at once
+def four_digit_decode(a,b,c,d):   # to show multiple digits or charecters on the display at once
     i = 0
     myArduino.digital_write(digit1,1 )
     myArduino.digital_write(digit2,1 )
@@ -147,32 +147,32 @@ def four_digit_digit_decode(a,b,c,d):   # to show multiple digits or charecters 
         digit_decode('~')
         time.sleep(delay)
         
-def scrolling_message_left(message): # to show a message on the display for set number of seconds left aligned
+def message_left(message): # to show a message on the display for set number of seconds left aligned
     q = 0
-    while q < len(message): # adjusts the variables sent to the four_digit_digit_decode based on the leangth of the input message and aligns it to the left
+    while q < len(message): # adjusts the variables sent to the four_digit_decode based on the leangth of the input message and aligns it to the left
         if len(message[q]) == 4:
-            four_digit_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
+            four_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
         elif len(message[q]) == 3:
-            four_digit_digit_decode(message[q][0], message[q][1],message[q][2],'~')
+            four_digit_decode(message[q][0], message[q][1],message[q][2],'~')
         elif len(message[q]) == 2:
-            four_digit_digit_decode(message[q][0], message[q][1],'~','~')
+            four_digit_decode(message[q][0], message[q][1],'~','~')
         elif len(message[q]) == 1:
-            four_digit_digit_decode(message[q][0], '~','~','~')
+            four_digit_decode(message[q][0], '~','~','~')
 
         
         q = q + 1
     
-def scrolling_message_right(message): # to show a message on the display for set number of seconds right aligned
+def message_right(message): # to show a message on the display for set number of seconds right aligned
     q = 0
     while q < len(message):
         if len(message[q]) == 4:
-            four_digit_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
+            four_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
         elif len(message[q]) == 3:
-            four_digit_digit_decode('~',message[q][0], message[q][1],message[q][2])
+            four_digit_decode('~',message[q][0], message[q][1],message[q][2])
         elif len(message[q]) == 2:
-            four_digit_digit_decode('~','~',message[q][0], message[q][1])
+            four_digit_decode('~','~',message[q][0], message[q][1])
         elif len(message[q]) == 1:
-            four_digit_digit_decode('~','~','~',message[q][0])
+            four_digit_decode('~','~','~',message[q][0])
         time.sleep(displayTime/2)
         
         q = q + 1
@@ -181,17 +181,21 @@ arduino_setup()
 IntroMessage = ['HI'] # set messages to display
 
 
-def scrolling_message(message):
-    message1 = (f'~~~~{message}~~~~')
+def scrolling_message_left(message):
+    message1 = (f'~~~~{message}~~~~~~~~')
     m = 0
     while m < len(message1)-4: 
-        four_digit_digit_decode(message1[m+0], message1[m+1], message1[m+2], message1[m+3])
+        four_digit_decode(message1[m+0], message1[m+1], message1[m+2], message1[m+3])
 
 
         m += 1
 
-scrolling_message('TANK VOLUME')
-scrolling_message('VOLUME HIGH')
-scrolling_message('VOLUME LOW')
+scrolling_message_left('TANK VOLUME')
 
-scrolling_message('GOODBYE')
+def scrolling_message_right(message):
+    message2 = (f'~~~~~~~~{message}~~~~')
+    m = 0
+    while m < len(message2)-4:
+        four_digit_decode(message2[m-0], message2[m-1], message2[m-2], message2[m-3])
+
+        m += 1
