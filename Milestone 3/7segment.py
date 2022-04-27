@@ -10,7 +10,7 @@ myArduino = pymata4.Pymata4()
 
 # delay between different digits shown (needed to adjust for flicker on digit_decode)
 delay = 0.001
-displayTime = 2 # time for each thing to be show (in secconds) 
+displayTime = 1# time for each thing to be show (in secconds) 
 # set the pins for the digit_decode to the correct outputs on arduino
 # digits must be connected to PWM ports
 digit1 = 6 

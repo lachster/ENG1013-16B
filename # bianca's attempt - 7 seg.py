@@ -1,3 +1,4 @@
+# bianca's attempt - 7 seg
 # import all modules
 
 import time
@@ -9,9 +10,10 @@ from pymata4 import pymata4
 myArduino = pymata4.Pymata4()
 
 # delay between different digits shown (needed to adjust for flicker on display)
-mircordelay = 0.002
+mircordelay = 0.005
 delay = 0.1
-displayTime = 2 # time for each thing to be show (in secconds) 
+displayTime = 2 # time for each digit to be shown (in seconds) 
+
 # set the pins for the display to the correct outputs on arduino
 # digits must be connected to PWM ports
 digit1 = 4
@@ -188,7 +190,7 @@ setup()
 while True:
     main('A','B','1','2')
 
-introMessage = ['ENG','1013','IS','EAZY']
+introMessage = ['ENG','1013','IS','COOL']
 z = 0
 scrolling_message_left(introMessage)
 
@@ -196,7 +198,3 @@ while True:
     z += 1
     c = [str(z)]
     scrolling_message_right((c))
-
-
-
-
