@@ -177,25 +177,27 @@ def message_right(message): # to show a message on the display for set number of
         
         q = q + 1
 
-arduino_setup()
-IntroMessage = ['HI'] # set messages to display
-
-
 def scrolling_message_left(message):
     message1 = (f'~~~~{message}~~~~~~~~')
     m = 0
     while m < len(message1)-4: 
         four_digit_decode(message1[m+0], message1[m+1], message1[m+2], message1[m+3])
-
+        time.sleep(displayTime/1.5)
 
         m += 1
 
-scrolling_message_left('TANK VOLUME')
+
 
 def scrolling_message_right(message):
-    message2 = (f'~~~~~~~~{message}~~~~')
+    message2 = (f'~~~~{message}~~~~~~~~')
     m = 0
     while m < len(message2)-4:
         four_digit_decode(message2[m-0], message2[m-1], message2[m-2], message2[m-3])
-
+        time.sleep(displayTime/1.5)
         m += 1
+
+arduino_setup()
+IntroMessage = ['HI'] # set messages to display
+
+#scrolling_message_left('TANK VOLUME IS NORMAL')
+scrolling_message_right('HI HOW ARE YOU TODAY?')
