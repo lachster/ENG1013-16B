@@ -212,15 +212,15 @@ def tank_volume():
     while v > 0:
         if v == 8:
             scrolling_message_left(fullVol)
-        elif v > 7:
+        elif v > 7 and v < 8:
             scrolling_message_left(nearFulVol)
-        elif v > 6:
+        elif v > 6 and v < 7:
             scrolling_message_left(highVol)
-        elif v > 4:
+        elif v > 4 and v < 6:
             scrolling_message_left(medVol)
-        elif v > 3:
+        elif v > 3 and v < 4:
             scrolling_message_left(lowVol)
-        elif v > 0:
+        elif v > 0 and v < 3:
             scrolling_message_left(nearEmtVol)
         elif v == 0:
             scrolling_message_left(emptyVol)
