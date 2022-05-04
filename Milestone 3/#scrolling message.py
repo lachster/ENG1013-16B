@@ -199,5 +199,5 @@ def scrolling_message_right(message):
 arduino_setup()
 IntroMessage = ['HI'] # set messages to display
 
-#scrolling_message_left('TANK VOLUME IS NORMAL')
-scrolling_message_right('HI HOW ARE YOU TODAY?')
+scrolling_message_left('TANK VOLUME IS NORMAL')
+#scrolling_message_right('HI HOW ARE YOU TODAY?')

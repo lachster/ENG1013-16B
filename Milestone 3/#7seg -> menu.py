@@ -30,9 +30,7 @@ segG = 8
 segDP = 15 #A1 on arduino board
 
 
-
-
-charLookup = { # segment code for all charecters
+charLookup = { # segment code for all characters
     '~' : '00000000',
     ' ' : '00000000',
     '0' : '11111100',
@@ -75,7 +73,7 @@ charLookup = { # segment code for all charecters
     '-' : '00000010'
 }
 
-def digit_decode(character): # decodes the charecter or digit into the segments of the display
+def digit_decode(character): # decodes the character or digit into the segments of the display
     stringPattern = charLookup[character]
     segmentvalue = int(stringPattern[0]) #sets the value of the pin based on the code from charLookup
     myArduino.digital_write(segA,segmentvalue)
@@ -229,13 +227,15 @@ def tank_volume():
 
 #sensor reading of tank, is vol is low, fill tank ; if vol is full, empty tank
 
-fillTank = #code to trigger a pump to fill the tank
-emptyTank = #code to trigger a pump to drain the tank
+#fillTank = #code to trigger a pump to fill the tank
+#emptyTank = #code to trigger a pump to drain the tank
 
 def tank_fill():
     v = 0
     while v > 0:
-        if v < 4 and v > 0:
+        if v < 4 and v >= 0:
             #trigger (fillTank) until v = 8
-        elif v > 8: 
+            pass
+        elif v >= 8: 
+            pass
             #trigger (emptyTank) until v = 8

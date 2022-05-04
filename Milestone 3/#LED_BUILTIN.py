@@ -16,32 +16,51 @@ myArduino = pymata4.Pymata4()
 
 #when vol = max/overfull, blue LED_BUILTIN
 
+yellowLED = 5
+redLED = 6
+blueLED = 7
+
+def setup_led():
+    myArduino.set_pin_mode_digital_output(yellowLED)
+    myArduino.set_pin_mode_digital_output(redLED)
+    myArduino.set_pin_mode_digital_output(blueLED)
+
+setup_led()
+
+  #red flashing LED
+while True:
+    v = 0
+    if 0 < v < 1.5 or 7.5 < v < 8:
+        myArduino.set_pin_mode_digital_output(redLED, 1)
+        time.delay(0.001)
+        myArduino.set_pin_mode_digital_output(redLED,0)
+        time.delay(0.001)
+
 def led_ON():
     v = 0
     while v > 0:
         if 3 < v < 4 or 6 < v < 7:
+            pass
             #trigger yellow LED_BUILTIN on
-        elif #rapid volume change:
+        elif v : 
+            #rapid volume change
+            pass
             #trigger yellow LED_BUILTIN on, flashing delay 0.001
         elif 0 < v < 3 or 7 < v < 8:
+            pass
             #trigger red LED_BUILTIN on
         elif 0 < v < 1.5 or 7.5 < v < 8:
+            pass
             #trigger red LED_BUILTIN on, flashing delay 0.001
-        elif v >= 8:
+        elif v >= 8 or v == 0:
             #trigger blue LED_BUILTIN on
+            pass
 
-#to turn on LED_BUILTIN, send HIGH signal ; for off send LOW signal
-
-void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-}
+#to turn on LED_BUILTIN, send 1 signal ; for off send 0 signal
 
 
-void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);   
-  delay(0.01);                       
-  digitalWrite(LED_BUILTIN, LOW);    
-  delay(0.01);                       
-}
 
-#works in arduino but not here
+
+
+
+
