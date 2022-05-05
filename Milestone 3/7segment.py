@@ -1,5 +1,6 @@
 # import all modules
 
+from logging.config import valid_ident
 import time
 
 from pymata4 import pymata4
@@ -10,11 +11,7 @@ myArduino = pymata4.Pymata4()
 
 # delay between different digits shown (needed to adjust for flicker on digit_decode)
 delay = 0.001
-<<<<<<< HEAD
-displayTime = 0.5 # time for each thing to be show (in secconds) 
-=======
 displayTime = 1# time for each thing to be show (in secconds) 
->>>>>>> 43f5b1e328f050423b08f76e5ccae70df46cd0ea
 # set the pins for the digit_decode to the correct outputs on arduino
 # digits must be connected to PWM ports
 digit1 = 6 
@@ -77,8 +74,8 @@ charLookup = { # segment code for all charecters
     '-' : '00000010'
 }
 
-def digit_decode(charecter): # decodes the charecter or digit into the segments of the display
-    stringPattern = charLookup[charecter]
+def digit_decode(character): # decodes the charecter or digit into the segments of the display
+    stringPattern = charLookup[character]
     segmentvalue = int(stringPattern[0]) #sets the value of the pin based on the code from charLookup
     myArduino.digital_write(segA,segmentvalue)
     segmentvalue = int(stringPattern[1])
@@ -185,20 +182,16 @@ arduino_setup()
 HighVolMessage = ['TANK','VOL','HIGH']
 
 
-
-
-InntroMessage = ['~~~H','~~HE','~HEL','HELL','ELLO','LLO~','LO~T','O~TH','~THE','THER','HERE','ERE~','RE~~','E~~~'] # set messages to display
-HighVolMessage = ['1234','567','HIGH']
+IntroMessage = ['~~~H','~~HE','~HEL','HELL','ELLO','LLO~','LO~T','O~TH','~THE','THER','HERE','ERE~','RE~~','E~~~'] # set messages to display
+HighVolMessage = ['TANK','VOL','HIGH']
 LowVolMessage = ['TANK','VOL','LOW']
 NormVolMessage = ['TANK','VOL','GOOD']
 
-scrolling_message_left(InntroMessage)
+
+scrolling_message_left(IntroMessage)
 
 while True:
     scrolling_message_left(HighVolMessage)
     scrolling_message_left(LowVolMessage)
     scrolling_message_left(NormVolMessage)
-
-
-
 
