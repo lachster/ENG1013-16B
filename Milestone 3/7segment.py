@@ -1,6 +1,6 @@
 # import all modules
 
-from logging.config import valid_ident
+
 import time
 
 from pymata4 import pymata4
