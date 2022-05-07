@@ -54,28 +54,29 @@ def all_led_off():
 setup_led()
 
 
-def led_system():
-    v = 0
-    while True:
-        all_led_off()
-        if 3 < v < 4 or 6 < v < 7:
-            
-            led_on(yellowLED)
-            #trigger yellow LED_BUILTIN on
-        elif v : 
-            #rapid volume change
-            
-            blinking_led(yellowLED)
-            #trigger yellow LED_BUILTIN on, flashing delay 0.001
-        elif 0 < v < 3 or 7 < v < 8:
-            led_on(redLED)
-            #trigger red LED_BUILTIN on
-        elif 0 < v < 1.5 or 7.5 < v < 8:
-            blinking_led(redLED)
-            #trigger red LED_BUILTIN on, flashing delay 0.001
-        elif v >= 8 or v == 0:
-            #trigger blue LED_BUILTIN on
-            led_on(blueLED)
+def led_system(volume):
+    v = volume
+    
+    all_led_off()
+    if 3 < v < 4 or 6 < v < 7:
+        
+        led_on(yellowLED)
+        #trigger yellow LED_BUILTIN on
+    elif v1 - v < -1 : 
+        #rapid volume change
+        
+        blinking_led(yellowLED)
+        #trigger yellow LED_BUILTIN on, flashing delay 0.001
+    elif 0 < v < 3 or 7 < v < 8:
+        led_on(redLED)
+        #trigger red LED_BUILTIN on
+    elif 0 < v < 1.5 or 7.5 < v < 8:
+        blinking_led(redLED)
+        #trigger red LED_BUILTIN on, flashing delay 0.001
+    elif v >= 8 or v == 0:
+        #trigger blue LED_BUILTIN on
+        led_on(blueLED)
+    v1 = v
 
 #to turn on LED_BUILTIN, send 1 signal ; for off send 0 signal
 
