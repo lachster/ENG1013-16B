@@ -176,22 +176,63 @@ def scrolling_message_right(message): # to show a message on the display for set
         q = q + 1
 
 
+
+
+
+
+
+
+
+
+#attempt 'display when volume is high/near full and low/near empty states
+fullVol = ['TANK', 'VOLUME', 'FULL']
+nearFulVol = ['TANK', 'VOLUME', 'NEAR', ]
+highVol = ['TANK', 'VOLUME', 'HIGH']
+medVol = ['TANK', 'VOLUME', 'MEDIUM']
+lowVol = ['TANK', 'VOLUME', 'LOW'] 
+nearEmtVol = ['TANK', 'VOLUME', 'NEAR', 'EMPTY']
+emptyVol = ['TANK', 'VOLUME', 'EMPTY']
+
+#sensor reading of the tank
+#max volume is 8 litres
+#why is this part of the code such a dull colour :(
+
+def tank_volume():
+    v = 0
+    while v > 0:
+        if v == 8:
+            scrolling_message_left(fullVol)
+        elif v > 7 and v < 8:
+            scrolling_message_left(nearFulVol)
+        elif v > 6 and v < 7:
+            scrolling_message_left(highVol)
+        elif v > 4 and v < 6:
+            scrolling_message_left(medVol)
+        elif v > 3 and v < 4:
+            scrolling_message_left(lowVol)
+        elif v > 0 and v < 3:
+            scrolling_message_left(nearEmtVol)
+        elif v == 0:
+            scrolling_message_left(emptyVol)
+
+    v = v + 1
+
+#sensor reading of tank, is vol is low, fill tank ; if vol is full, empty tank
+
+#fillTank = #code to trigger a pump to fill the tank
+#emptyTank = #code to trigger a pump to drain the tank
+
+def tank_fill():
+    v = 0
+    while v > 0:
+        if v < 4 and v >= 0:
+            #trigger (fillTank) until v = 8
+            pass
+        elif v >= 8: 
+            pass
+            #trigger (emptyTank) until v = 8
+
+
+
+
 arduino_setup()
-
-
-HighVolMessage = ['TANK','VOL','HIGH']
-
-
-IntroMessage = ['~~~H','~~HE','~HEL','HELL','ELLO','LLO~','LO~T','O~TH','~THE','THER','HERE','ERE~','RE~~','E~~~'] # set messages to display
-HighVolMessage = ['TANK','VOL','HIGH']
-LowVolMessage = ['TANK','VOL','LOW']
-NormVolMessage = ['TANK','VOL','GOOD']
-
-
-scrolling_message_left(IntroMessage)
-
-while True:
-    scrolling_message_left(HighVolMessage)
-    scrolling_message_left(LowVolMessage)
-    scrolling_message_left(NormVolMessage)
-

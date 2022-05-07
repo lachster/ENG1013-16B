@@ -25,36 +25,57 @@ def setup_led():
     myArduino.set_pin_mode_digital_output(redLED)
     myArduino.set_pin_mode_digital_output(blueLED)
 
-setup_led()
+
+
+def blinking_led(led):
+    i = 0
+    while i < 3:
+        myArduino.digital_pin_write(led,1)
+        time.sleep(0.5)
+        myArduino.digital_pin_write(led,0)
+        time.sleep(0.5)
+        i += 1
+
+def led_on(led):
+    myArduino.digital_pin_write(led,1)
+
+def led_off(led):
+    myArduino.digital_pin_write(led,0)
+
+def all_led_off():
+    myArduino.digital_pin_write(yellowLED,0)
+    myArduino.digital_pin_write(redLED,0)
+    myArduino.digital_pin_write(blueLED,0)
+
+
 
   #red flashing LED
-while True:
-    v = 0
-    if 0 < v < 1.5 or 7.5 < v < 8:
-        myArduino.set_pin_mode_digital_output(redLED, 1)
-        time.delay(0.001)
-        myArduino.set_pin_mode_digital_output(redLED,0)
-        time.delay(0.001)
 
-def led_ON():
+setup_led()
+
+
+def led_system():
     v = 0
-    while v > 0:
+    while True:
+        all_led_off()
         if 3 < v < 4 or 6 < v < 7:
-            pass
+            
+            led_on(yellowLED)
             #trigger yellow LED_BUILTIN on
         elif v : 
             #rapid volume change
-            pass
+            
+            blinking_led(yellowLED)
             #trigger yellow LED_BUILTIN on, flashing delay 0.001
         elif 0 < v < 3 or 7 < v < 8:
-            pass
+            led_on(redLED)
             #trigger red LED_BUILTIN on
         elif 0 < v < 1.5 or 7.5 < v < 8:
-            pass
+            blinking_led(redLED)
             #trigger red LED_BUILTIN on, flashing delay 0.001
         elif v >= 8 or v == 0:
             #trigger blue LED_BUILTIN on
-            pass
+            led_on(blueLED)
 
 #to turn on LED_BUILTIN, send 1 signal ; for off send 0 signal
 
