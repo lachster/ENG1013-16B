@@ -108,7 +108,7 @@ def arduino_setup(): # turns all needed pins on
     myArduino._set_pin_mode(digit3,1 )
     myArduino._set_pin_mode(digit4,1 )
 
-def four_digit_digit_decode(a,b,c,d):   # to show multiple digits or charecters on the display at once
+def four_digit_decode(a,b,c,d):   # to show multiple digits or charecters on the display at once
     i = 0
     myArduino.digital_write(digit1,1 )
     myArduino.digital_write(digit2,1 )
@@ -147,15 +147,15 @@ def four_digit_digit_decode(a,b,c,d):   # to show multiple digits or charecters 
         
 def scrolling_message_left(message): # to show a message on the display for set number of secconds left alligned
     q = 0
-    while q < len(message): # adjusts the variables sent to the four_digit_digit_decode based on the leangth of the input message and aligns it to the left
+    while q < len(message): # adjusts the variables sent to the four_digit_decode based on the leangth of the input message and aligns it to the left
         if len(message[q]) == 4:
-            four_digit_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
+            four_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
         elif len(message[q]) == 3:
-            four_digit_digit_decode(message[q][0], message[q][1],message[q][2],'~')
+            four_digit_decode(message[q][0], message[q][1],message[q][2],'~')
         elif len(message[q]) == 2:
-            four_digit_digit_decode(message[q][0], message[q][1],'~','~')
+            four_digit_decode(message[q][0], message[q][1],'~','~')
         elif len(message[q]) == 1:
-            four_digit_digit_decode(message[q][0], '~','~','~')
+            four_digit_decode(message[q][0], '~','~','~')
         # time.sleep(displayTime/2)
         
         q = q + 1
@@ -164,13 +164,13 @@ def scrolling_message_right(message): # to show a message on the display for set
     q = 0
     while q < len(message):
         if len(message[q]) == 4:
-            four_digit_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
+            four_digit_decode(message[q][0],message[q][1], message[q][2],message[q][3])        
         elif len(message[q]) == 3:
-            four_digit_digit_decode('~',message[q][0], message[q][1],message[q][2])
+            four_digit_decode('~',message[q][0], message[q][1],message[q][2])
         elif len(message[q]) == 2:
-            four_digit_digit_decode('~','~',message[q][0], message[q][1])
+            four_digit_decode('~','~',message[q][0], message[q][1])
         elif len(message[q]) == 1:
-            four_digit_digit_decode('~','~','~',message[q][0])
+            four_digit_decode('~','~','~',message[q][0])
         time.sleep(displayTime/2)
         
         q = q + 1
@@ -178,20 +178,43 @@ def scrolling_message_right(message): # to show a message on the display for set
 
 
 
+def scrolling_message_left(message):
+    message1 = (f'~~~~{message}~~~~~~~~')
+    m = 0
+    while m < len(message1)-4: 
+        four_digit_decode(message1[m+0], message1[m+1], message1[m+2], message1[m+3])
+        time.sleep(displayTime/1.5)
 
+        m += 1
+
+
+
+def scrolling_message_right(message):
+    message2 = (f'~~~~{message}~~~~~~~~')
+    m = 0
+    while m < len(message2)-4:
+        four_digit_decode(message2[m-0], message2[m-1], message2[m-2], message2[m-3])
+        time.sleep(displayTime/1.5)
+        m += 1
+
+arduino_setup()
+IntroMessage = ['HI'] # set messages to display
+
+scrolling_message_left('TANK VOLUME IS NORMAL')
+#scrolling_message_right('HI HOW ARE YOU TODAY?')
 
 
 
 
 
 #attempt 'display when volume is high/near full and low/near empty states
-fullVol = ['TANK', 'VOLUME', 'FULL']
-nearFulVol = ['TANK', 'VOLUME', 'NEAR', ]
-highVol = ['TANK', 'VOLUME', 'HIGH']
-medVol = ['TANK', 'VOLUME', 'MEDIUM']
-lowVol = ['TANK', 'VOLUME', 'LOW'] 
-nearEmtVol = ['TANK', 'VOLUME', 'NEAR', 'EMPTY']
-emptyVol = ['TANK', 'VOLUME', 'EMPTY']
+fullVol = ['TANK VOLUME FULL']
+nearFulVol = ['TANK VOLUME NEAR']
+highVol = ['TANK VOLUME HIGH']
+medVol = ['TANK VOLUME MEDIUM']
+lowVol = ['TANK VOLUME LOW'] 
+nearEmtVol = ['TANK VOLUME NEAR EMPTY']
+emptyVol = ['TANK VOLUME EMPTY']
 
 #sensor reading of the tank
 #max volume is 8 litres
