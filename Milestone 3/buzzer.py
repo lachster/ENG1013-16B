@@ -7,7 +7,7 @@ from pymata4 import pymata4
 #set the conditions of the arduino () is the default 
 myArduino = pymata4.Pymata4()
 
-buzzerPin = 7
+buzzerPin = 8
 pwmbuzzerpin = 9
 
 
@@ -22,11 +22,12 @@ def buzzer(duration):
 
 
 def pwm_buzzer(duration):
-    myArduino.pwm_write(pwmbuzzerpin,1)
+    myArduino.pwm_write(pwmbuzzerpin)
     time.sleep(duration)
     myArduino.pwm_write(pwmbuzzerpin,0)
 
-    
+
 buzzer(5)
 
 pwm_buzzer(5)
+

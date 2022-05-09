@@ -53,6 +53,7 @@ def all_led_off():
 
 setup_led()
 
+v1 = 0
 
 def led_system(volume):
     v = volume
@@ -62,7 +63,7 @@ def led_system(volume):
         
         led_on(yellowLED)
         #trigger yellow LED_BUILTIN on
-    elif v1 - v < -1 : 
+    elif (v1 - v) > 1:
         #rapid volume change
         
         blinking_led(yellowLED)
@@ -81,6 +82,12 @@ def led_system(volume):
 #to turn on LED_BUILTIN, send 1 signal ; for off send 0 signal
 
 
+led_system(8)
+time.sleep(4)
+led_system(3.5)
+time.sleep(4)
+led_system(1)
+time.sleep(4)
 
 
 
