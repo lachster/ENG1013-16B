@@ -179,8 +179,8 @@ arduino_setup()
 
 HighVolMessage = ['TANK','VOL','HIGH']
 
-IntroMessage = ['~~~H','~~HE','~HEL','HELL','ELLO','LLO~','LO~T','O~TH','~THE','THER','HERE','ERE~','RE~~','E~~~'] # set messages to display
-HighVolMessage = ['1234','567','HIGH']
+IntroMessage = ['WELCOME'] # set messages to display
+HighVolMessage = ['TANK','VOL','HIGH']
 LowVolMessage = ['TANK','VOL','LOW']
 NormVolMessage = ['TANK','VOL','GOOD']
 
