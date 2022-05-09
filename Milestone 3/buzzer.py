@@ -19,15 +19,36 @@ def buzzer(duration):
     myArduino.digital_pin_write(buzzerPin,1)
     time.sleep(duration)
     myArduino.digital_pin_write(buzzerPin,0)
+    time.sleep(duration)
 
 
 def pwm_buzzer(duration):
-    myArduino.pwm_write(pwmbuzzerpin)
+    myArduino.pwm_write(pwmbuzzerpin,1)
     time.sleep(duration)
     myArduino.pwm_write(pwmbuzzerpin,0)
+    time.sleep(duration)
+
+def near_empty():
+    i = 0
+    while i < 10:
+        pwm_buzzer(0.2)
+        i += 1
+
+def near_full():
+    i = 0
+    while i < 20:
+        pwm_buzzer(0.1)
+        i += 1
+
+def rapid_change():
+    i = 0
+    while i < 5:
+        pwm_buzzer(0.5)
+        i += 1
 
 
-buzzer(5)
-
-pwm_buzzer(5)
-
+near_empty()
+time.sleep(5)
+near_full()
+time.sleep(5)
+rapid_change()
