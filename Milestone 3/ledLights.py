@@ -63,10 +63,7 @@ def led_system(volume):
         
         led_on(yellowLED)
         #trigger yellow LED_BUILTIN on
-    elif (v1 - v) > 1:
-        #rapid volume change
-        
-        blinking_led(yellowLED)
+
         #trigger yellow LED_BUILTIN on, flashing delay 0.001
     elif 0 < v < 3 or 7 < v < 8:
         led_on(redLED)
