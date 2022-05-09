@@ -97,10 +97,8 @@ def distance_view_current(): # to view current distance, reading straight from U
     def led_on(led):
         board1.digital_pin_write(led,1)
 
-    def all_led_off():
-        board1.digital_pin_write(yellowLED,0)
-        board1.digital_pin_write(redLED,0)
-        board1.digital_pin_write(blueLED,0)
+    def led_off(led):
+        board1.digital_pin_write(led,0)
 
     setup_led()
 
@@ -124,35 +122,48 @@ def distance_view_current(): # to view current distance, reading straight from U
     def sonar_setup(board1, triggerPin, echoPin): # what actually prints the values into the console
         while True:
             try:
-                all_led_off()
                 # time.sleep used to dente the intervals per reading. At this stage, set to one per second, for graphing purposes
                 time.sleep(1.0) 
                 board1.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 # denote 'num' as the 'store' value
-                num = int(sonar_report())
+                num = sonar_report()
                 # and print.
                 print(num, 'cm')
 
                 if num == 60:
                     print("Empty.")
                     led_on(blueLED)
+                    led_off(redLED)
+                    led_off(yellowLED)
+                    motor_speed(speed2)
                 elif 60 > num > 37.5:
                     print("Near-Empty.")
                     led_on(redLED)
+                    led_off(blueLED)
+                    led_off(yellowLED)
                     motor_speed(speed2)
                 elif 37.5 > num > 30:
                     print("Low.")
                     led_on(yellowLED)
+                    led_off(blueLED)
+                    led_off(redLED)
                     motor_speed(speed2)
                 elif 30 < num < 22.5:
                     print("Medium.")
+                    led_off(redLED)
+                    led_off(blueLED)
+                    led_off(yellowLED)
                 elif 22.5 < num < 7.5:
                     print("Near full.")
                     led_on(yellowLED)
+                    led_off(redLED)
+                    led_off(blueLED)
                     motor_speed(speed3)
                 elif 7.5 < num < 0:
                     print("Full.")
                     led_on(redLED)
+                    led_off(yellowLED)
+                    led_off(blueLED)
                     motor_speed(speed3)
 
             except Exception: # if exception were to occur...
