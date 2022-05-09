@@ -122,10 +122,6 @@ def distance_view_current(): # to view current distance, reading straight from U
     def sonar_setup(board1, triggerPin, echoPin): # what actually prints the values into the console
         while True:
             try:
-<<<<<<< HEAD
-                
-=======
->>>>>>> 65ea807e253010fc8a1bcadb537c9396661193ca
                 # time.sleep used to dente the intervals per reading. At this stage, set to one per second, for graphing purposes
                 time.sleep(1.0) 
                 board1.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
