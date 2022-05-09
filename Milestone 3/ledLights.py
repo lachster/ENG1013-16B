@@ -16,9 +16,9 @@ myArduino = pymata4.Pymata4()
 
 #when vol = max/overfull, blue LED_BUILTIN
 
-yellowLED = 5
-redLED = 6
-blueLED = 7
+yellowLED = 8
+redLED = 7
+blueLED = 9
 
 def setup_led():
     myArduino.set_pin_mode_digital_output(yellowLED)

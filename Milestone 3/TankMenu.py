@@ -7,6 +7,14 @@ from pymata4 import pymata4
 pin = 0000 # arbituary pin, for login
 temp = [12, 10, 9, 19, 22, 22, 18, 15] # global data for temperature, as temp sensor was not setup in time 
 timePoints = [200, 500, 800, 1100, 1400, 1700, 2000, 2300] # global data for correspoding times, due to reason above
+triggerPin = 2
+echoPin = 3
+yellowLED = 8
+redLED = 7
+blueLED = 9
+speed1 = 4
+speed2 = 5
+speed3 = 6
 
 def pin_entry(): # to get access to the menu, setup pin system
     global pin
@@ -70,14 +78,42 @@ def display_main_menu(): # the main hub for all functions
 def distance_view_current(): # to view current distance, reading straight from Ultrasonic Sensor
     
     board1 = pymata4.Pymata4() #declare the board
-    # declare the chosen digital pins
-    triggerPin = 9
-    echoPin = 10
+    global triggerPin
+    global echoPin
+    global yellowLED
+    global redLED
+    global blueLED
+    
     # store is used as the dedicted list for the sensor values to be placed
     store = [0]
 
     # making sure the readings would be in centimetres.
     distanceCm = 2 
+
+    def setup_led():
+        board1.set_pin_mode_digital_output(yellowLED)
+        board1.set_pin_mode_digital_output(redLED)
+        board1.set_pin_mode_digital_output(blueLED)
+
+    def led_on(led):
+        board1.digital_pin_write(led,1)
+
+    def all_led_off():
+        board1.digital_pin_write(yellowLED,0)
+        board1.digital_pin_write(redLED,0)
+        board1.digital_pin_write(blueLED,0)
+
+    setup_led()
+
+    board1.set_pin_mode_digital_output(speed1)
+    board1.set_pin_mode_digital_output(speed2)
+    board1.set_pin_mode_digital_output(speed3)
+
+    def motor_speed(speed):
+        board1.digital_pin_write(speed1,0)
+        board1.digital_pin_write(speed2,0)
+        board1.digital_pin_write(speed3,0)
+        board1.digital_pin_write(speed,1)
 
     def sonar_callback(data): # callback is used to put the values from the Ultrasonic sensor, into the 'store' list.
         value = data[distanceCm]
@@ -89,6 +125,7 @@ def distance_view_current(): # to view current distance, reading straight from U
     def sonar_setup(board1, triggerPin, echoPin): # what actually prints the values into the console
         while True:
             try:
+                all_led_off()
                 # time.sleep used to dente the intervals per reading. At this stage, set to one per second, for graphing purposes
                 time.sleep(1.0) 
                 board1.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
@@ -99,16 +136,25 @@ def distance_view_current(): # to view current distance, reading straight from U
 
                 if num == 60:
                     print("Empty.")
+                    led_on(blueLED)
                 elif 60 > num > 37.5:
                     print("Near-Empty.")
+                    led_on(redLED)
+                    motor_speed(speed2)
                 elif 37.5 > num > 30:
                     print("Low.")
-                elif 30 < num < 15:
-                    print("High.")
-                elif 15 < num < 7.5:
+                    led_on(yellowLED)
+                    motor_speed(speed2)
+                elif 30 < num < 22.5:
+                    print("Medium.")
+                elif 22.5 < num < 7.5:
                     print("Near full.")
+                    led_on(yellowLED)
+                    motor_speed(speed3)
                 elif 7.5 < num < 0:
                     print("Full.")
+                    led_on(redLED)
+                    motor_speed(speed3)
 
             except Exception: # if exception were to occur...
                 board1.shutdown()
@@ -118,8 +164,8 @@ def distance_view_current(): # to view current distance, reading straight from U
 
 def distance_view_lowest(): # the same as above, but now only showing the furthest distance from the sensor, hence, the lowest value
     board = pymata4.Pymata4()
-    triggerPin = 9
-    echoPin = 10
+    global triggerPin
+    global echoPin
     store = [0]
 
     distanceCm = 2
@@ -173,8 +219,8 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
 
     # All is the same as watching live (so same as before)...
     board = pymata4.Pymata4()
-    triggerPin = 9
-    echoPin = 10
+    global triggerPin
+    global echoPin
     store = [0]
 
     distanceCm = 2
