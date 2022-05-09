@@ -69,7 +69,7 @@ def display_main_menu(): # the main hub for all functions
 
 def distance_view_current(): # to view current distance, reading straight from Ultrasonic Sensor
     
-    board = pymata4.Pymata4() #declare the board
+    board1 = pymata4.Pymata4() #declare the board
     # declare the chosen digital pins
     triggerPin = 9
     echoPin = 10
@@ -86,21 +86,35 @@ def distance_view_current(): # to view current distance, reading straight from U
     def sonar_report(): # returns the 'store' list, with the new value
         return store[0]
     
-    def sonar_setup(board, triggerPin, echoPin): # what actually prints the values into the console
+    def sonar_setup(board1, triggerPin, echoPin): # what actually prints the values into the console
         while True:
             try:
                 # time.sleep used to dente the intervals per reading. At this stage, set to one per second, for graphing purposes
                 time.sleep(1.0) 
-                board.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
+                board1.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 # denote 'num' as the 'store' value
-                num = sonar_report() 
+                num = sonar_report()
                 # and print.
                 print(num, 'cm')
+
+                if num == 60:
+                    print("Empty.")
+                elif 60 > num > 37.5:
+                    print("Near-Empty.")
+                elif 37.5 > num > 30:
+                    print("Low.")
+                elif 30 < num < 15:
+                    print("High.")
+                elif 15 < num < 7.5:
+                    print("Near full.")
+                elif 7.5 < num < 0:
+                    print("Full.")
+
             except Exception: # if exception were to occur...
-                board.shutdown()
+                board1.shutdown()
     
     print("The current distance from sensor")
-    sonar_setup(board, triggerPin, echoPin)
+    sonar_setup(board1, triggerPin, echoPin)
 
 def distance_view_lowest(): # the same as above, but now only showing the furthest distance from the sensor, hence, the lowest value
     board = pymata4.Pymata4()
