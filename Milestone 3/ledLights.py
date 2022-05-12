@@ -77,7 +77,8 @@ def led_system(volume):
     v1 = v
 
 #to turn on LED_BUILTIN, send 1 signal ; for off send 0 signal
-
+while True:
+    blinking_led(yellowLED)
 
 led_system(8)
 time.sleep(4)
