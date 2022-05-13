@@ -1,6 +1,7 @@
 import time
 from tkinter import Image
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from pymata4 import pymata4
 
 pin = 0000 # arbituary pin, for login
@@ -14,6 +15,10 @@ blueLED = 9
 speed1 = 4
 speed2 = 5
 speed3 = 6
+
+
+
+
 
 def pin_entry(): # to get access to the menu, setup pin system
     global pin
