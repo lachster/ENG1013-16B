@@ -7,15 +7,16 @@ from pymata4 import pymata4
 pin = 0000 # arbituary pin, for login
 temp = [12, 10, 9, 19, 22, 22, 18, 15] # global data for temperature, as temp sensor was not setup in time 
 timePoints = [200, 500, 800, 1100, 1400, 1700, 2000, 2300] # global data for correspoding times, due to reason above
-triggerPin = 2
-echoPin = 3
+triggerPin = 10
+echoPin = 9
 yellowLED = 8
 redLED = 7
 blueLED = 9
-speed1 = 4
-speed2 = 5
-speed3 = 6
+foward = 5
+backwards = 6
 
+
+board = pymata4.Pymata4()
 
 
 
@@ -107,15 +108,7 @@ def distance_view_current(): # to view current distance, reading straight from U
 
     setup_led()
 
-    board1.set_pin_mode_digital_output(speed1)
-    board1.set_pin_mode_digital_output(speed2)
-    board1.set_pin_mode_digital_output(speed3)
 
-    def motor_speed(speed):
-        board1.digital_pin_write(speed1,0)
-        board1.digital_pin_write(speed2,0)
-        board1.digital_pin_write(speed3,0)
-        board1.digital_pin_write(speed,1)
 
     def sonar_callback(data): # callback is used to put the values from the Ultrasonic sensor, into the 'store' list.
         value = data[distanceCm]
@@ -140,36 +133,37 @@ def distance_view_current(): # to view current distance, reading straight from U
                     led_on(blueLED)
                     led_off(redLED)
                     led_off(yellowLED)
-                    motor_speed(speed2)
+                    motor(1,5)
                 elif 60 > num > 37.5:
                     print("Near-Empty.")
                     led_on(redLED)
                     led_off(blueLED)
                     led_off(yellowLED)
-                    motor_speed(speed2)
+                    motor(1,4)
                 elif 37.5 > num > 30:
                     print("Low.")
                     led_on(yellowLED)
                     led_off(blueLED)
                     led_off(redLED)
-                    motor_speed(speed2)
+                    motor(1,2)
                 elif 30 < num < 22.5:
                     print("Medium.")
                     led_off(redLED)
                     led_off(blueLED)
                     led_off(yellowLED)
+                    motor(0,0)
                 elif 22.5 < num < 7.5:
                     print("Near full.")
                     led_on(yellowLED)
                     led_off(redLED)
                     led_off(blueLED)
-                    motor_speed(speed3)
+                    motor(0,1)
                 elif 7.5 < num < 0:
                     print("Full.")
                     led_on(redLED)
                     led_off(yellowLED)
                     led_off(blueLED)
-                    motor_speed(speed3)
+                    motor(0,5)
 
             except Exception: # if exception were to occur...
                 board1.shutdown()
@@ -178,7 +172,7 @@ def distance_view_current(): # to view current distance, reading straight from U
     sonar_setup(board1, triggerPin, echoPin)
 
 def distance_view_lowest(): # the same as above, but now only showing the furthest distance from the sensor, hence, the lowest value
-    board = pymata4.Pymata4()
+    
     global triggerPin
     global echoPin
     store = [0]
@@ -285,7 +279,7 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
             except Exception:
                 board.shutdown()
 
-    sonar_setup(board, triggerPin, echoPin)
+    sonar_setup(triggerPin, echoPin)
 
 def temp_entry(): # current place holder, before actual temp sensor w/ thermistor can be setup.
     # from above, the arbuitrary values 
@@ -333,6 +327,21 @@ def end_program(): # used to just escape menu
     print("System shutdown.")
     quit()
 
+
+
+
+
+
+def motor(direction, speed):
+    if direction == 0:
+        pin = foward
+    if direction == 1:
+        pin = backwards
+    
+    pwmSpeed = speed*51
+    board.pwm_write(foward,0)
+    board.pwm_write(backwards,0)
+    board.pwm_write(pin,pwmSpeed)
 
 #Useless intro, just for aesthetic
 name = input("Welcome. Please Enter your name: ")
