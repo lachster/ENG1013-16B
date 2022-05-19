@@ -7,152 +7,138 @@ from pymata4 import pymata4
 """
 #set the conditions of the arduino () is the default 
 myArduino = pymata4.Pymata4(arduino_wait=2)
-flashingLight = 8
-clockpin = 4
-ser = 3
-
-delay = 0.0005
-displayTime = 1
-
-digit1 = 5
-digit2 = 6 
-digit3 = 7
-digit4 = 8
-charLookup = { # segment code for all charecters
-    '~' : '00000000',
-    ' ' : '00000000',
-    '0' : '11111100',
-    '1' : '01100000',
-    '2' : '11011010',
-    '3' : '11110010',
-    '4' : '01100110',
-    '5' : '10110110',
-    '6' : '10111110',
-    '7' : '11100000',
-    '8' : '11111110',
-    '9' : '11110110',
-    "A" : "11101110",
-    "B" : '00111110',
-    'C' : '00011010',
-    'D' : '01111010',
-    'E' : '10011110',
-    'F' : '10001110',
-    'G' : '10111100',
-    'H' : '01101110',
-    'I' : '01100000',
-    'J' : '01110000',
-    'K' : '00001111',
-    'L' : '00011100',
-    'M' : '00101011',
-    'N' : '00101010',
-    'O' : '00111010',
-    'P' : '11001110',
-    'Q' : '11100110',
-    'R' : '00001010',
-    'S' : '10110111',
-    'T' : '00011110',
-    'U' : '00111001',
-    'V' : '01111100',
-    'W' : '00111001',
-    'X' : '01101110',
-    'Y' : '01110110',
-    'Z' : '11011011',
-    '?' : '11000001',
-    '-' : '00000010'
-}
-
-myArduino._set_pin_mode(digit1,1 )
-myArduino._set_pin_mode(digit2,1 )
-myArduino._set_pin_mode(digit3,1 )
-myArduino._set_pin_mode(digit4,1 )
-
-ledState = [0,0,0,0,0,0,0,0]
-
-myArduino.set_pin_mode_digital_output(clockpin)
-myArduino.set_pin_mode_digital_output(ser)
-
-myArduino.set_pin_mode_digital_output(flashingLight)
+def seven_segment(output,displayTime):
 
 
 
 
+    clockpin = 4
+    ser = 3
 
+    delay = 0.001
+    #displayTime = 0.1
 
+    digit1 = 5
+    digit2 = 6 
+    digit3 = 7
+    digit4 = 8
+    charLookup = { # segment code for all charecters
+        '~' : '00000000',
+        ' ' : '00000000',
+        '0' : '01111110',
+        '1' : '00110000',
+        '2' : '01101101',
+        '3' : '01111001',
+        '4' : '00110011',
+        '5' : '01011011',
+        '6' : '01011111',
+        '7' : '01110000',
+        '8' : '01111111',
+        '9' : '01111011',
+        "A" : "01110111",
+        "B" : '00011111',
+        'C' : '00001101',
+        'D' : '00111101',
+        'E' : '01001111',
+        'F' : '01000111',
+        'G' : '01011110',
+        'H' : '00110111',
+        'I' : '00110000',
+        'J' : '00111000',
+        'K' : '10000111',
+        'L' : '00001110',
+        'M' : '10010101',
+        'N' : '00010101',
+        'O' : '00011101',
+        'P' : '01100111',
+        'Q' : '01110011',
+        'R' : '00000101',
+        'S' : '11011011',
+        'T' : '00001111',
+        'U' : '10011100',
+        'V' : '00111110',
+        'W' : '10011100',
+        'X' : '00110111',
+        'Y' : '00111011',
+        'Z' : '11101101',
+        '?' : '11100000',
+        '-' : '00000001',
+        '.' : '10000000'
+    }
 
+    myArduino._set_pin_mode(digit1,1 )
+    myArduino._set_pin_mode(digit2,1 )
+    myArduino._set_pin_mode(digit3,1 )
+    myArduino._set_pin_mode(digit4,1 )
 
-def shift_reg(character):
-    i = 0
-    
-    
-    
-    while i < 8:
-        stringPattern = charLookup[str(character)]
-        #stringPattern = stringPattern[::-1]
-        myArduino.digital_pin_write(ser,int(stringPattern[i]))
-        
-        myArduino.digital_pin_write(clockpin,1)
+    myArduino.set_pin_mode_digital_output(clockpin)
+    myArduino.set_pin_mode_digital_output(ser)
+
+    def shift_reg(character):
+        i = 0
         
         
-        myArduino.digital_pin_write(clockpin,0)
-        #myArduino.digital_pin_write(ser,0)
-
-        i += 1
-
-
-def four_shift_reg(word):   # to show multiple digits or charecters on the display at once
-    i = 0
-    a = word[0]
-    b = word[1]
-    c = word[2]
-    d = word[3]
-
-    myArduino.digital_write(digit1,1 )
-    myArduino.digital_write(digit2,1 )
-    myArduino.digital_write(digit3,1 )
-    myArduino.digital_write(digit4,1 )
-    while i < (displayTime/(18*delay)): #cycles the display a set number of times based on the set variable wich accounts for the delay time 
-        i += 1
         
+        while i < 8:
+            stringPattern = charLookup[str(character)]
+            
+            stringPattern = stringPattern[::-1]
+            
+            myArduino.digital_pin_write(ser,int(stringPattern[i]))
+            
+            myArduino.digital_pin_write(clockpin,1)
+            
+            
+            myArduino.digital_pin_write(clockpin,0)
+            
 
-        #turns next digit on and prevoius digit off
+            i += 1
+
+
+    def four_shift_reg(word):   # to show multiple digits or charecters on the display at once
+        i = 0
+        word = word.upper()
+        digits = [digit1,digit2,digit3,digit4]
         myArduino.digital_write(digit1,1 )
-        shift_reg(a) # sends variable to the digit decode function
-        myArduino.digital_write(digit1,0 )
-        #time.sleep(delay)
-        
-        #shift_reg('~') # clears the display to prevent bleeding of the previous digit onto the next
-        time.sleep(delay) #delay of set time between displaying digits to control brightness
-        myArduino.digital_write(digit1,1)
-
-        
         myArduino.digital_write(digit2,1 )
-        shift_reg(b)
-        #time.sleep(delay)
-        myArduino.digital_write(digit2,0 )
-        time.sleep(delay)
-        myArduino.digital_write(digit2,1 )
-
-
         myArduino.digital_write(digit3,1 )
-        
-        shift_reg(c)
-        #time.sleep(delay)
-        myArduino.digital_write(digit3,0 )
-        
-        time.sleep(delay)
-        myArduino.digital_write(digit3,1 )
-
-
         myArduino.digital_write(digit4,1 )
+        while i < (displayTime/(18*delay)): #cycles the display a set number of times based on the set variable wich accounts for the delay time 
+            i += 1
+            x = 0
+
+            while x < 4:
+                #turns next digit on and prevoius digit off
+                myArduino.digital_write(digits[x],1 )
+                shift_reg(word[x]) # sends variable to the digit decode function
+                myArduino.digital_write(digits[x],0 )
+                #time.sleep(delay)
+                
+                #shift_reg('~') # clears the display to prevent bleeding of the previous digit onto the next
+                time.sleep(delay) #delay of set time between displaying digits to control brightness
+                myArduino.digital_write(digits[x],1)
+                x += 1
+
+    def scrolling_message_left(message):
+        message1 = (f'~~~~{message}~~~~~~~~')
+        m = 0
+        while m < len(message1)-4: 
+            four_shift_reg(f'{message1[m+0]}{message1[m+1]}{message1[m+2]}{message1[m+3]}')
+            time.sleep(displayTime*1.2)
+
+            m += 1
+
+    if len(output) > 4 :
+        displayTime = displayTime/4
+        scrolling_message_left(output)
+    elif len(output) == 4 :
+        four_shift_reg(output)
+    elif len(output) < 4:
+        while len(output) < 4:
+            output = f'~{output}'
+        four_shift_reg(output)
+
+seven_segment('123k',5)
+#seven_segment('hello there how are you today on this ultra fine week',1)
+
         
-        shift_reg(d)
-        #time.sleep(delay)
-        myArduino.digital_write(digit4,0 )
-        
-        time.sleep(delay)
-        myArduino.digital_write(digit4,1 )
-
-
-
-while True:
-    four_shift_reg('1234')

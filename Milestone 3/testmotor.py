@@ -6,8 +6,8 @@ from pymata4 import pymata4
 #set the conditions of the arduino () is the default 
 myArduino = pymata4.Pymata4()
 
-foward = 5
-backwards = 6
+foward = 9
+backwards = 10
 
 myArduino.set_pin_mode_pwm_output(foward)
 myArduino.set_pin_mode_pwm_output(backwards)
