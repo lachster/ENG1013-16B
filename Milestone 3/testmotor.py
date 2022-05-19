@@ -28,7 +28,7 @@ def motor(direction, speed):
 
 motor(0,5)
 time.sleep(5)
-motor(1,1)
+motor(1,2)
 time.sleep(5)
 motor(0,0)
 

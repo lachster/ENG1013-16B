@@ -7,16 +7,28 @@ from pymata4 import pymata4
 pin = 0000 # arbituary pin, for login
 temp = [12, 10, 9, 19, 22, 22, 18, 15] # global data for temperature, as temp sensor was not setup in time 
 timePoints = [200, 500, 800, 1100, 1400, 1700, 2000, 2300] # global data for correspoding times, due to reason above
-triggerPin = 10
-echoPin = 9
-yellowLED = 8
-redLED = 7
-blueLED = 9
-foward = 5
-backwards = 6
+triggerPin = 18
+echoPin = 17
+blueLED = 11
+redLED = 12
+yellowLED = 15
+motorFoward = 9
+motorBackwards = 10
+flashingLight = 16
+buzzer = 2
+clockpin = 4
+ser = 3
+tempSense = 0
 
 
-board = pymata4.Pymata4()
+
+calibration = 6
+
+
+try:
+    MyArduino = pymata4.Pymata4(arduino_wait=2)
+except:
+    MyArduino = pymata4.Pymata4(arduino_wait=2)
 
 
 
@@ -82,7 +94,7 @@ def display_main_menu(): # the main hub for all functions
 
 def distance_view_current(): # to view current distance, reading straight from Ultrasonic Sensor
     
-    board1 = pymata4.Pymata4() #declare the board
+     #declare the MyArduino
     global triggerPin
     global echoPin
     global yellowLED
@@ -96,15 +108,15 @@ def distance_view_current(): # to view current distance, reading straight from U
     distanceCm = 2 
 
     def setup_led():
-        board1.set_pin_mode_digital_output(yellowLED)
-        board1.set_pin_mode_digital_output(redLED)
-        board1.set_pin_mode_digital_output(blueLED)
+        MyArduino.set_pin_mode_digital_output(yellowLED)
+        MyArduino.set_pin_mode_digital_output(redLED)
+        MyArduino.set_pin_mode_digital_output(blueLED)
 
     def led_on(led):
-        board1.digital_pin_write(led,1)
+        MyArduino.digital_pin_write(led,1)
 
     def led_off(led):
-        board1.digital_pin_write(led,0)
+        MyArduino.digital_pin_write(led,0)
 
     setup_led()
 
@@ -117,59 +129,70 @@ def distance_view_current(): # to view current distance, reading straight from U
     def sonar_report(): # returns the 'store' list, with the new value
         return store[0]
     
-    def sonar_setup(board1, triggerPin, echoPin): # what actually prints the values into the console
+    def sonar_setup(MyArduino, triggerPin, echoPin): # what actually prints the values into the console
         while True:
-            try:
+            #try:
                 # time.sleep used to dente the intervals per reading. At this stage, set to one per second, for graphing purposes
-                time.sleep(1.0) 
-                board1.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
+                time.sleep(1)
+                MyArduino.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 # denote 'num' as the 'store' value
                 num = sonar_report()
                 # and print.
-                print(num, 'cm')
+                #print(num, 'cm')
+                
+                vol = round(10-(num/calibration),1)
+                print(f'{vol}L')
+                seven_segment(f'{str(vol)}L',0.8)
 
-                if num == 60:
+
+                if vol < 0.5:
                     print("Empty.")
-                    led_on(blueLED)
-                    led_off(redLED)
-                    led_off(yellowLED)
+                    MyArduino.digital_pin_write(blueLED,1)
+                    MyArduino.digital_pin_write(redLED,0)
+                    MyArduino.digital_pin_write(yellowLED,0)
                     motor(1,5)
-                elif 60 > num > 37.5:
+                    #seven_segment('empty',1)
+                elif 0.5 < vol and vol <= 2:
                     print("Near-Empty.")
                     led_on(redLED)
                     led_off(blueLED)
                     led_off(yellowLED)
                     motor(1,4)
-                elif 37.5 > num > 30:
+                    #seven_segment('near empty',1)
+                elif 2 < vol and vol <= 5:
                     print("Low.")
                     led_on(yellowLED)
                     led_off(blueLED)
                     led_off(redLED)
                     motor(1,2)
-                elif 30 < num < 22.5:
+                    #seven_segment('low',1)
+                elif 5 < vol and vol <= 7 :
                     print("Medium.")
                     led_off(redLED)
                     led_off(blueLED)
                     led_off(yellowLED)
                     motor(0,0)
-                elif 22.5 < num < 7.5:
+                    #seven_segment('medium',1)
+                elif 7 < vol and vol <= 9:
                     print("Near full.")
                     led_on(yellowLED)
                     led_off(redLED)
                     led_off(blueLED)
-                    motor(0,1)
-                elif 7.5 < num < 0:
+                    motor(0,3)
+                    #seven_segment('near full',1)
+                elif 9 < vol and vol <= 10:
                     print("Full.")
                     led_on(redLED)
                     led_off(yellowLED)
                     led_off(blueLED)
                     motor(0,5)
+                    #seven_segment('full',1)
 
-            except Exception: # if exception were to occur...
-                board1.shutdown()
+            #except Exception: # if exception were to occur...
+                #MyArduino.shutdown()
     
-    print("The current distance from sensor")
-    sonar_setup(board1, triggerPin, echoPin)
+    print("Current volume in tank")
+    sonar_setup(MyArduino, triggerPin, echoPin)
 
 def distance_view_lowest(): # the same as above, but now only showing the furthest distance from the sensor, hence, the lowest value
     
@@ -190,19 +213,19 @@ def distance_view_lowest(): # the same as above, but now only showing the furthe
     def sonar_report():
         return store[0]
     
-    def sonar_setup(board, triggerPin, echoPin):
+    def sonar_setup(MyArduino, triggerPin, echoPin):
         while True:
             try:
                 time.sleep(1.0)
-                board.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
+                MyArduino.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 num = sonar_report()
                 print(num, "cm")
             except Exception:
-                board.shutdown()
+                MyArduino.shutdown()
     
     print("The highest distance from sensor:")
     print("Note: the highest the number, the further away the liquid from the sensor.")
-    sonar_setup(board, triggerPin, echoPin)
+    sonar_setup(MyArduino, triggerPin, echoPin)
 
 def distance_view_graph(): # to view a certain iteration of graph (make sure to know which iteration)
     i = int(input("Which Graph Iteration would you like to view? (denote with number of iteration): "))
@@ -227,7 +250,7 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
     xpoint = []
 
     # All is the same as watching live (so same as before)...
-    board = pymata4.Pymata4()
+    MyArduino = pymata4.Pymata4()
     global triggerPin
     global echoPin
     store = [0]
@@ -242,7 +265,7 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
         return store[0]
 
 
-    def sonar_setup(board, triggerPin, echoPin):
+    def sonar_setup(MyArduino, triggerPin, echoPin):
         # new variable for...
         # time (s)
         t = 0
@@ -251,7 +274,7 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
         while True:
             try:
                 time.sleep(1.0)
-                board.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
+                MyArduino.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 num = sonar_report()
                 # The two lists from before are populated with...
                 # sensor value on y-axis
@@ -277,7 +300,7 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
                 print(num)
             # if exception were to occur...
             except Exception:
-                board.shutdown()
+                MyArduino.shutdown()
 
     sonar_setup(triggerPin, echoPin)
 
@@ -327,24 +350,177 @@ def end_program(): # used to just escape menu
     print("System shutdown.")
     quit()
 
+def read_temp():
+    inValue = MyArduino.analog_read(temp)
+    #convert analog
+    thermVolt = inValue[0]*(5/1023)
+    #find resistance
+    thermRes = (50000-10000*thermVolt)/thermVolt
+    #using steinhart equations
+
+    tempK = 1/((1/298.15)+(1/3058.00)*np.log(thermRes/10000.0))
+    tempC = tempK - 273.15
+    roundedC = round(tempC,1)
+    return roundedC
+
+def seven_segment(output,displayTime):
 
 
 
+
+    clockpin = 4
+    ser = 3
+
+    delay = 0.001
+    #displayTime = 0.1
+
+    digit1 = 5
+    digit2 = 6 
+    digit3 = 7
+    digit4 = 8
+    charLookup = { # segment code for all charecters
+        '~' : '00000000',
+        ' ' : '00000000',
+        '0' : '01111110',
+        '1' : '00110000',
+        '2' : '01101101',
+        '3' : '01111001',
+        '4' : '00110011',
+        '5' : '01011011',
+        '6' : '01011111',
+        '7' : '01110000',
+        '8' : '01111111',
+        '9' : '01111011',
+        "A" : "01110111",
+        "B" : '00011111',
+        'C' : '00001101',
+        'D' : '00111101',
+        'E' : '01001111',
+        'F' : '01000111',
+        'G' : '01011110',
+        'H' : '00110111',
+        'I' : '00110000',
+        'J' : '00111000',
+        'K' : '10000111',
+        'L' : '00001110',
+        'M' : '10010101',
+        'N' : '00010101',
+        'O' : '00011101',
+        'P' : '01100111',
+        'Q' : '01110011',
+        'R' : '00000101',
+        'S' : '11011011',
+        'T' : '00001111',
+        'U' : '10011100',
+        'V' : '00111110',
+        'W' : '10011100',
+        'X' : '00110111',
+        'Y' : '00111011',
+        'Z' : '11101101',
+        '?' : '11100000',
+        '-' : '00000001',
+        '.' : '10000000'
+    }
+
+    MyArduino._set_pin_mode(digit1,1 )
+    MyArduino._set_pin_mode(digit2,1 )
+    MyArduino._set_pin_mode(digit3,1 )
+    MyArduino._set_pin_mode(digit4,1 )
+
+    MyArduino.set_pin_mode_digital_output(clockpin)
+    MyArduino.set_pin_mode_digital_output(ser)
+
+    def shift_reg(character):
+        i = 0
+        
+        
+        
+        while i < 8:
+            stringPattern = charLookup[str(character)]
+            
+            stringPattern = stringPattern[::-1]
+            
+            MyArduino.digital_pin_write(ser,int(stringPattern[i]))
+            
+            MyArduino.digital_pin_write(clockpin,1)
+            
+            
+            MyArduino.digital_pin_write(clockpin,0)
+            
+
+            i += 1
+
+
+    def four_shift_reg(word):   # to show multiple digits or charecters on the display at once
+        i = 0
+        word = word.upper()
+        digits = [digit1,digit2,digit3,digit4]
+        MyArduino.digital_write(digit1,1 )
+        MyArduino.digital_write(digit2,1 )
+        MyArduino.digital_write(digit3,1 )
+        MyArduino.digital_write(digit4,1 )
+        while i < (displayTime/(18*delay)): #cycles the display a set number of times based on the set variable wich accounts for the delay time 
+            i += 1
+            x = 0
+
+            while x < 4:
+                #turns next digit on and prevoius digit off
+                MyArduino.digital_write(digits[x],1 )
+                shift_reg(word[x]) # sends variable to the digit decode function
+                MyArduino.digital_write(digits[x],0 )
+                #time.sleep(delay)
+                
+                #shift_reg('~') # clears the display to prevent bleeding of the previous digit onto the next
+                time.sleep(delay) #delay of set time between displaying digits to control brightness
+                MyArduino.digital_write(digits[x],1)
+                x += 1
+
+    def scrolling_message_left(message):
+        message1 = (f'~~~~{message}~~~~~~~~')
+        m = 0
+        while m < len(message1)-4: 
+            four_shift_reg(f'{message1[m+0]}{message1[m+1]}{message1[m+2]}{message1[m+3]}')
+            time.sleep(displayTime*1.2)
+
+            m += 1
+
+    if len(output) > 4 :
+        displayTime = displayTime/4
+        scrolling_message_left(output)
+    elif len(output) == 4 :
+        four_shift_reg(output)
+    elif len(output) < 4:
+        while len(output) < 4:
+            output = f'~{output}'
+        four_shift_reg(output)
 
 
 def motor(direction, speed):
+
+    MyArduino.set_pin_mode_pwm_output(motorFoward)
+    MyArduino.set_pin_mode_pwm_output(motorBackwards)
     if direction == 0:
-        pin = foward
+        pin = motorFoward
     if direction == 1:
-        pin = backwards
+        pin = motorBackwards
     
     pwmSpeed = speed*51
-    board.pwm_write(foward,0)
-    board.pwm_write(backwards,0)
-    board.pwm_write(pin,pwmSpeed)
+    MyArduino.pwm_write(motorFoward,0)
+    MyArduino.pwm_write(motorBackwards,0)
+    MyArduino.pwm_write(pin,pwmSpeed)
+
+
+
 
 #Useless intro, just for aesthetic
-name = input("Welcome. Please Enter your name: ")
-print("Hello,",name,". Nice to see you!")
+#name = input("Welcome. Please Enter your name: ")
+#print("Hello,",name,". Nice to see you!")
+#seven_segment(f'hello {name}. nice to see you',1)
 pin_entry()
 
+while True:
+    time.sleep(1)
+    print(f'{read_temp()}\N{DEGREE SIGN}C')
+    #seven_segment(str(round(read_temp()/10,2)),0.9)
+
+    

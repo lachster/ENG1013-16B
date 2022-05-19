@@ -16,9 +16,10 @@ myArduino = pymata4.Pymata4()
 
 #when vol = max/overfull, blue LED_BUILTIN
 
-yellowLED = 8
-redLED = 7
-blueLED = 9
+yellowLED = 15
+redLED = 12
+blueLED = 11
+flashingYellowLED = 16
 
 def setup_led():
     myArduino.set_pin_mode_digital_output(yellowLED)
@@ -77,8 +78,7 @@ def led_system(volume):
     v1 = v
 
 #to turn on LED_BUILTIN, send 1 signal ; for off send 0 signal
-while True:
-    blinking_led(yellowLED)
+
 
 led_system(8)
 time.sleep(4)
@@ -87,7 +87,8 @@ time.sleep(4)
 led_system(1)
 time.sleep(4)
 
-
+myArduino.set_pin_mode_pwm_output(blueLED)
+myArduino.pwm_write(blueLED,5)
 
 
 

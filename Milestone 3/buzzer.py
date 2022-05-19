@@ -7,7 +7,7 @@ from pymata4 import pymata4
 #set the conditions of the arduino () is the default 
 myArduino = pymata4.Pymata4()
 
-buzzerPin = 10
+buzzerPin = 2
 pwmbuzzerpin = 11
 
 
@@ -31,19 +31,19 @@ def pwm_buzzer(duration):
 def near_empty():
     i = 0
     while i < 10:
-        pwm_buzzer(0.2)
+        buzzer(0.2)
         i += 1
 
 def near_full():
     i = 0
     while i < 20:
-        pwm_buzzer(0.1)
+        buzzer(0.1)
         i += 1
 
 def rapid_change():
     i = 0
     while i < 5:
-        pwm_buzzer(0.5)
+        buzzer(0.5)
         i += 1
 
 
