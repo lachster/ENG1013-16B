@@ -3,7 +3,7 @@ from tkinter import Image
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from pymata4 import pymata4
-
+import math as np
 pin = '0000' # arbituary pin, for login
 temp = [12, 10, 9, 19, 22, 22, 18, 15] # global data for temperature, as temp sensor was not setup in time 
 timePoints = [200, 500, 800, 1100, 1400, 1700, 2000, 2300] # global data for correspoding times, due to reason above
@@ -19,7 +19,7 @@ motorBackwards = 10
 buzzer = 2
 clockpin = 4
 ser = 3
-tempSense = 0 # anolog pin
+tempPin = 0 # anolog pin
 
 
 
@@ -312,7 +312,7 @@ def temp_entry(): # current place holder, before actual temp sensor w/ thermisto
     global timePoints
 
     # allow new entry for temperature, to be added to list (again, only placeholder for now)
-    newEntry = int(input("Enter new Ambient temperature: "))
+    newEntry = read_temp()
     temp.append(newEntry)
     # allow new entry for correspoding time
     newTime = int(input("Enter current time (HHMM): "))
@@ -504,25 +504,22 @@ def motor(direction, speed):
     myArduino.pwm_write(motorBackwards,0)
     myArduino.pwm_write(pin,pwmSpeed)
 
+def read_temp():
+    myArduino.set_pin_mode_analog_input(tempPin)
+    inValue = myArduino.analog_read(tempPin)
+    #convert analog
+    thermVolt = inValue[0]*(5/1023)
+    #find resistance
+    thermRes = (50000-10000*thermVolt)/thermVolt
+    #using steinhart equations
+
+    tempK = 1/((1/298.15)+(1/3058.00)*np.log(thermRes/10000.0))
+    tempC = tempK - 273.15
+    roundedC = round(tempC,1)
+    return roundedC
+
+
 def tempreture():
-
-    temp = 0
-
-    myArduino.set_pin_mode_analog_input(temp)
-
-
-    def read_temp():
-        inValue = myArduino.analog_read(temp)
-        #convert analog
-        thermVolt = inValue[0]*(5/1023)
-        #find resistance
-        thermRes = (50000-10000*thermVolt)/thermVolt
-        #using steinhart equations
-
-        tempK = 1/((1/298.15)+(1/3058.00)*np.log(thermRes/10000.0))
-        tempC = tempK - 273.15
-        roundedC = round(tempC,1)
-        return roundedC
     while True:
         time.sleep(1)
         tempCelsus = read_temp()
