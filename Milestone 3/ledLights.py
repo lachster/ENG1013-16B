@@ -20,22 +20,20 @@ yellowLED = 15
 redLED = 12
 blueLED = 11
 flashingYellowLED = 16
+flashingRedLED = 19
 
 def setup_led():
     myArduino.set_pin_mode_digital_output(yellowLED)
     myArduino.set_pin_mode_digital_output(redLED)
     myArduino.set_pin_mode_digital_output(blueLED)
-
+    myArduino.set_pin_mode_digital_output(flashingYellowLED)
+    myArduino.set_pin_mode_digital_output(flashingRedLED)
+    myArduino.digital_pin_write(flashingYellowLED,1)
+    myArduino.digital_pin_write(flashingRedLED,1)
 
 
 def blinking_led(led):
-    i = 0
-    while i < 3:
-        myArduino.digital_pin_write(led,1)
-        time.sleep(0.5)
-        myArduino.digital_pin_write(led,0)
-        time.sleep(0.5)
-        i += 1
+    myArduino.digital_pin_write(led,0)
 
 def led_on(led):
     myArduino.digital_pin_write(led,1)
@@ -80,6 +78,9 @@ def led_system(volume):
 #to turn on LED_BUILTIN, send 1 signal ; for off send 0 signal
 
 
+blinking_led(flashingRedLED)
+
+
 led_system(8)
 time.sleep(4)
 led_system(3.5)
@@ -87,8 +88,6 @@ time.sleep(4)
 led_system(1)
 time.sleep(4)
 
-myArduino.set_pin_mode_pwm_output(blueLED)
-myArduino.pwm_write(blueLED,5)
 
 
 
