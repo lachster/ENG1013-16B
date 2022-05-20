@@ -1,12 +1,22 @@
+"""""
+ENG1013 group 16B
+tank monitoring and operations system 
+
+Lachlan Dragovic id:33156344 (ldra0004@student.monash.edu)
+
+"""""
+
+
+
+
 import time
 from tkinter import Image
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from pymata4 import pymata4
 import math as np
-pin = '0000' # arbituary pin, for login
-temp = [12, 10, 9, 19, 22, 22, 18, 15] # global data for temperature, as temp sensor was not setup in time 
-timePoints = [200, 500, 800, 1100, 1400, 1700, 2000, 2300] # global data for correspoding times, due to reason above
+pin = '6344' # set the pin required to accsess the system
+#set all the pins on the arduino as global variables at the top of the file to easily be changed 
 triggerPin = 18
 echoPin = 17
 blueLED = 11
@@ -20,17 +30,17 @@ buzzer = 2
 clockpin = 4
 ser = 3
 tempPin = 0 # anolog pin
+digit1 = 5
+digit2 = 6 
+digit3 = 7
+digit4 = 8
 
 
-
+#calibration factor that is set by cm of water rise per litre 
+#this assumes that the water rise is linear with the increase in volume
 calibration = 6
 
-
-
 myArduino = pymata4.Pymata4(arduino_wait=2)
-
-
-
 
 
 def pin_entry(): # to get access to the menu, setup pin system
@@ -112,11 +122,7 @@ def distance_view_current(): # to view current distance, reading straight from U
     setup_led()
 
     def led_light(led,state):
-        myArduino.digital_pin_write(led,state)
-
-    def led_blink(led,state):
-        myArduino.digital_pin_write(led,state)
-    
+        myArduino.digital_pin_write(led,state) 
 
     def all_led_off():
         myArduino.digital_pin_write(yellowLED,0)
@@ -151,15 +157,15 @@ def distance_view_current(): # to view current distance, reading straight from U
                 if vol < 0.5:
                     print("Empty.")
                     all_led_off()
-                    led_blink(flashingRedLED,0)
-                    led_blink(flashingYellowLED,0)
+                    led_light(flashingRedLED,0)
+                    led_light(flashingYellowLED,0)
                     motor(1,5)
                     #seven_segment('empty',1)
                 elif 0.5 < vol and vol <= 2:
                     print("Near-Empty.")
                     all_led_off()
                     led_light(redLED,1)
-                    led_blink(flashingRedLED,0)
+                    led_light(flashingRedLED,0)
                     
                     motor(1,4)
                     #seven_segment('near empty',1)
@@ -178,7 +184,7 @@ def distance_view_current(): # to view current distance, reading straight from U
                 elif 7 < vol and vol <= 9:
                     print("Near full.")
                     all_led_off()
-                    led_blink(flashingRedLED,0)
+                    led_light(flashingRedLED,0)
                     led_light(redLED,1)
                     motor(0,3)
                     #seven_segment('near full',1)
@@ -187,6 +193,7 @@ def distance_view_current(): # to view current distance, reading straight from U
                     all_led_off()
                     
                     motor(0,5)
+                    led_light(flashingRedLED,0)
                     led_light(redLED,1)
                     #seven_segment('full',1)
 
@@ -252,7 +259,7 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
     xpoint = []
 
     # All is the same as watching live (so same as before)...
-    myArduino = pymata4.Pymata4()
+    
     global triggerPin
     global echoPin
     store = [0]
@@ -359,14 +366,11 @@ def seven_segment(output,displayTime):
 
     clockpin = 4
     ser = 3
+    # delay between operations chnages brightness and is required to be smaller than threshold to prevent flicker
+    delay = 0.001 
+    
+    #setting the 
 
-    delay = 0.001
-    #displayTime = 0.1
-
-    digit1 = 5
-    digit2 = 6 
-    digit3 = 7
-    digit4 = 8
     charLookup = { # segment code for all charecters
         '~' : '00000000',
         ' ' : '00000000',
