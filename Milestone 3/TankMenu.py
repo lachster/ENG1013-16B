@@ -3,7 +3,7 @@ from tkinter import Image
 import matplotlib.pyplot as plt
 from pymata4 import pymata4
 
-pin = 0000 # arbituary pin, for login
+pin = "0000" # arbituary pin, for login
 temp = [12, 10, 9, 19, 22, 22, 18, 15] # global data for temperature, as temp sensor was not setup in time 
 timePoints = [200, 500, 800, 1100, 1400, 1700, 2000, 2300] # global data for correspoding times, due to reason above
 triggerPin = 2
@@ -20,15 +20,20 @@ def pin_entry(): # to get access to the menu, setup pin system
     counter = 0 # counter for attempts
     while True:
         try:
-            userpin = int(input("Please type in your 4-digit pin: "))
+            userpin = str(input("Please type in your 4-digit pin: "))
             if userpin == pin: # if user is ccorrect, move on and display menu
                 break;
             else: # if incorrect, add 1 to attempt counter and print error message
                 print("Incorrect Passcode. Please try again. (For the sake of ease: 0000 or 0)")
                 counter = counter + 1
                 if counter == 5: # if past 5 attempts, shut down system
-                    print("You've passed 5 attempts...")
-                    quit()
+                    print("You've passed 5 attempts. Try again in 10 seconds.")
+                    time.sleep(10)
+                    if input("Final chance pin: ") == pin:
+                        break;
+                    else:
+                        print("Rest in pepperoni.")
+                        quit()
         except ValueError: # to handle inputs that aren't integers
             print("Incorrect Passcode. Do make sure to enter the numerical passcode.")
     
