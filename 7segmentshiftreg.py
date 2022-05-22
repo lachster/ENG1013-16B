@@ -14,14 +14,14 @@ delay = 0.1
 displayTime = 2 # time for each thing to be show (in secconds) 
 # set the pins for the display to the correct outputs on arduino
 # digits must be connected to PWM ports
-digit1 = 4
-digit2 = 5
-digit3 = 6
-digit4 = 7
+digit1 = 1
+digit2 = 1
+digit3 = 1
+digit4 = 1
 
-ser = 3
-clock = 2
-clear = 8
+ser = 2
+clock = 4
+clear = 3
 
 
 charLookup = { # segment code for all charecters
