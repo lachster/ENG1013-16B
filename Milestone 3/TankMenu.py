@@ -27,9 +27,7 @@ flashingYellowLED = 16
 flashingRedLED = 19
 motorFoward = 9
 motorBackwards = 10
-buzzer1 = 2
-buzzer2 = 1
-buzzer3 = 0
+buzzer = 2
 clockpin = 4
 ser = 3
 tempPin = 0 # anolog pin
@@ -48,9 +46,7 @@ offSet = 2
 
 
 myArduino = pymata4.Pymata4(arduino_wait=2)
-myArduino.set_pin_mode_digital_output(buzzer1)
-myArduino.set_pin_mode_digital_output(buzzer2)
-myArduino.set_pin_mode_digital_output(buzzer3)
+
 
 def pin_entry(): # to get access to the menu, setup pin system
     global pin
@@ -116,11 +112,7 @@ def display_main_menu(): # the main hub for all functions
     elif choice == 0:
         end_program()
 
-def buzzer(pin,state):
-    myArduino.digital_pin_write(buzzer1,0)
-    myArduino.digital_pin_write(buzzer2,0)
-    myArduino.digital_pin_write(buzzer3,0)
-    myArduino.digital_pin_write(pin,state)
+
 
 def volume_view_current(): # to view current distance, reading straight from Ultrasonic Sensor
    
@@ -136,6 +128,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
         myArduino.set_pin_mode_digital_output(blueLED)
         myArduino.set_pin_mode_digital_output(flashingYellowLED)
         myArduino.set_pin_mode_digital_output(flashingRedLED)
+        myArduino.set_pin_mode_digital_output(buzzer)
         myArduino.digital_pin_write(flashingYellowLED,1)
         myArduino.digital_pin_write(flashingRedLED,1)
 
@@ -160,6 +153,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
     
     def sonar_setup(myArduino, triggerPin, echoPin): # what actually prints the values into the console
         i = 0 
+        
         while True:
             #try:
                 # time.sleep used to dente the intervals per reading. At this stage, set to one per second, for graphing purposes
@@ -186,7 +180,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     led_light(flashingRedLED,0)
                     led_light(flashingYellowLED,0)
                     motor(1,5)
-                    buzzer(buzzer1,1)
+                    myArduino.digital_pin_write(buzzer,1)
                     #seven_segment('empty',1)
                 elif 0.5 < vol and vol <= 2:
                     state = ("Near-Empty.")
@@ -195,7 +189,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     led_light(flashingRedLED,0)
                     
                     motor(1,4)
-                    buzzer(buzzer1,1)
+                    myArduino.digital_pin_write(buzzer,0)
                     #seven_segment('near empty',1)
                 elif 2 < vol and vol <= 5:
                     state = ("Low.")
@@ -203,13 +197,13 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     led_light(yellowLED,1)
                    
                     motor(1,2)
-                    buzzer(buzzer1,0)
+                    myArduino.digital_pin_write(buzzer,0)
                     #seven_segment('low',1)
                 elif 5 < vol and vol <= 7 :
                     state = ("Medium.")
                     all_led_off()
                     motor(0,0)
-                    buzzer(buzzer1,0)
+                    myArduino.digital_pin_write(buzzer,0)
                     #seven_segment('medium',1)
                 elif 7 < vol and vol <= 9:
                     state = ("Near full.")
@@ -217,7 +211,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     led_light(flashingRedLED,0)
                     led_light(redLED,1)
                     motor(0,3)
-                    buzzer(buzzer2,1)
+                    myArduino.digital_pin_write(buzzer,1)
                     #seven_segment('near full',1)
                 elif 9 < vol :
                     state = ("Full.")
@@ -226,7 +220,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     motor(0,5)
                     led_light(flashingRedLED,0)
                     led_light(redLED,1)
-                    buzzer(buzzer2,1)
+                    myArduino.digital_pin_write(buzzer,1)
                     #seven_segment('full',1)
 
                 print(f'current volume: {vol}L {state}')
@@ -595,9 +589,9 @@ def tempreture():
 
 
 #Useless intro, just for aesthetic
-#name = input("Welcome. Please Enter your name: ")
-#print("Hello,",name,". Nice to see you!")
-#seven_segment(f'hello {name}. nice to see you',1)
+name = input("Welcome. Please Enter your name: ")
+print("Hello,",name,". Nice to see you!")
+seven_segment(f'hello {name}. nice to see you',1)
 pin_entry()
 
 
