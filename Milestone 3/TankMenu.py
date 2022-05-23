@@ -1,8 +1,9 @@
 """""
 ENG1013 group 16B
-tank monitoring and operations system 
+Tank monitoring and operations system 
 
 Lachlan Dragovic id:33156344 (ldra0004@student.monash.edu)
+Theo Gunawan id:33181284 (tgun0009@student.monash.edu)
 
 """""
 
@@ -10,9 +11,8 @@ Lachlan Dragovic id:33156344 (ldra0004@student.monash.edu)
 
 
 import time
-from tkinter import Image
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+import matplotlib.image as mping
 from pymata4 import pymata4
 import math as np
 pin = '6344' # set the pin required to accsess the system
@@ -55,8 +55,13 @@ def pin_entry(): # to get access to the menu, setup pin system
                 print("Incorrect Passcode. Please try again. (For the sake of ease: 0000 or 0)")
                 counter = counter + 1
                 if counter == 5: # if past 5 attempts, shut down system
-                    print("You've passed 5 attempts...")
-                    quit()
+                    print("You've passed 5 attempts. Try again in 10 seconds.")
+                    time.sleep(10)
+                    if input("Final chance pin: ") == pin:
+                        break;
+                    else:
+                        print("You have failed.")
+                        quit()
         except ValueError: # to handle inputs that aren't integers
             print("Incorrect Passcode. Do make sure to enter the numerical passcode.")
     
@@ -66,12 +71,12 @@ def display_main_menu(): # the main hub for all functions
     print("\033[1;36;40m Welcome back to the Tank Monitoring System.")
     print("---------------------------------")
     print("\033[0;37;40m Select one of the following, with the number noted.")
-    print("1. View current state.")
-    print("2. View lowest state (for refills)")
+    print("1. View current Volume state.")
+    print("2. View lowest Volume state (for refills)")
     print("3. View previous graphs.")
-    print("4. Distance Graph Generation.")
-    print("5: Temperature Entry (placeholder).")
-    print("6: Temperature Graph Generation (placeholder).")
+    print("4. Volume Graph Generation.")
+    print("5: View current Temperaature.")
+    print("6: Temperature Graph Generation.")
     print("0: Escape.")
 
     choice = -1 # user input will change this to whatever choice they declare
@@ -88,21 +93,21 @@ def display_main_menu(): # the main hub for all functions
 
 # depending on input, triggers certain function
     if choice == 1:
-        distance_view_current()
+        volume_view_current()
     elif choice == 2:
-        distance_view_lowest()
+        volume_view_lowest()
     elif choice == 3:
-        distance_view_graph()
+        volume_view_graph()
     elif choice == 4:
-        dgraph_generation()
+        vgraph_generation()
     elif choice == 5:
-        temp_entry()
+        temperature_view_current()
     elif choice == 6:
-        temp_graph_generation()
+        tgraph_generation()
     elif choice == 0:
         end_program()
 
-def distance_view_current(): # to view current distance, reading straight from Ultrasonic Sensor
+def volume_view_current(): # to view current distance, reading straight from Ultrasonic Sensor
    
     # store is used as the dedicted list for the sensor values to be placed
     store = [0]
@@ -147,8 +152,6 @@ def distance_view_current(): # to view current distance, reading straight from U
                 myArduino.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 # denote 'num' as the 'store' value
                 num = sonar_report()
-                # and print.
-                #print(num, 'cm')
                 
                 vol = round(10-(num/calibration),1)
                 tempC = round(read_temp(),1)
@@ -212,7 +215,7 @@ def distance_view_current(): # to view current distance, reading straight from U
     print("Current volume in tank")
     sonar_setup(myArduino, triggerPin, echoPin)
 
-def distance_view_lowest(): # the same as above, but now only showing the furthest distance from the sensor, hence, the lowest value
+def volume_view_lowest(): # the same as above, but now only showing the lowest value.
     
     global triggerPin
     global echoPin
@@ -237,22 +240,24 @@ def distance_view_lowest(): # the same as above, but now only showing the furthe
                 time.sleep(1.0)
                 myArduino.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 num = sonar_report()
-                print(num, "cm")
+                vol = round(10-(num/calibration),1)
+                print(f'{vol}L')
+                seven_segment(f'{str(vol)}L',0.75)
             except Exception:
                 myArduino.shutdown()
     
-    print("The highest distance from sensor:")
-    print("Note: the highest the number, the further away the liquid from the sensor.")
+    print("Lowest Read value: ")
     sonar_setup(myArduino, triggerPin, echoPin)
 
-def distance_view_graph(): # to view a certain iteration of graph (make sure to know which iteration)
+def volume_view_graph(): # to view a certain iteration of graph (make sure to know which iteration)
     i = int(input("Which Graph Iteration would you like to view? (denote with number of iteration): "))
     # if the chosen iteration exists...
     if f'Distance_Graph_{i}.png' == True: 
         # open up the image, with the right iteration
-        image = Image.open(f'Distance_Graph_{i}.png')
+        image = mping.imread(f'Distance_Graph_{i}.png')
         # show it.
-        image.show()
+        plt.imshow(image)
+        plt.show()
         # return back to main
         display_main_menu()
     # if it doesn't...
@@ -260,7 +265,7 @@ def distance_view_graph(): # to view a certain iteration of graph (make sure to 
         print("There either is none of that iteration, or error.")
         display_main_menu()
 
-def dgraph_generation(): # to actually generate new graphs, to be stored in project folder
+def vgraph_generation(): # to actually generate new graphs, to be stored in project folder
     # two lists to be populated with...
     # sonar report
     ypoint = []
@@ -294,9 +299,10 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
                 time.sleep(1.0)
                 myArduino.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 num = sonar_report()
+                vol = round(10-(num/calibration),1)
                 # The two lists from before are populated with...
                 # sensor value on y-axis
-                ypoint.append(num)
+                ypoint.append(vol)
                 # time value on x-axis
                 xpoint.append(t)
                 # on each run, the 'time (t)' goes up by one (that's why it's set to 1.0 sleep)
@@ -308,56 +314,88 @@ def dgraph_generation(): # to actually generate new graphs, to be stored in proj
                     # plot values to graph
                     plt.plot(xpoint, ypoint)
                     # denote y and x axis labels
-                    plt.ylabel("Distance (cm)")
+                    plt.ylabel("Tank Volume (L)")
                     plt.xlabel("Time (s)")
                     # denote title, marking the time past since start of graph generation
-                    plt.title(f"Graph Iteration for distance: {t} seconds")
+                    plt.title(f"Graph Iteration for Volume: {t} seconds")
                     # denote save name, using iteration count, for recollection in 'View graph' tool
-                    plt.savefig(f"Distance_Graph_{it}.png")
+                    plt.savefig(f"_Graph_{it}.png")
                 # still printing the current values, so user can watch for issues. 
-                print(num)
+                print(f'{vol}L')
+                seven_segment(f'{str(vol)}L',0.75)
             # if exception were to occur...
             except Exception:
                 myArduino.shutdown()
 
     sonar_setup(triggerPin, echoPin)
 
-def temp_entry(): # current place holder, before actual temp sensor w/ thermistor can be setup.
-    # from above, the arbuitrary values 
-    global temp
-    global timePoints
+def temperature_view_current(): #view current temperature.
+    
+    global tempPin
 
-    # allow new entry for temperature, to be added to list (again, only placeholder for now)
-    newEntry = read_temp()
-    temp.append(newEntry)
-    # allow new entry for correspoding time
-    newTime = int(input("Enter current time (HHMM): "))
-    timePoints.append(newTime)
+    def read_temp():
+        myArduino.set_pin_mode_analog_input(tempPin)
+        inValue = myArduino.analog_read(tempPin)
+        #convert analog
+        thermVolt = inValue[0]*(5/1023)
+        #find resistance
+        thermRes = (50000-10000*thermVolt)/thermVolt
+        #using steinhart equations
 
-    # print out new list
-    print("Current temp values stored: ", temp)
-    print("Correspoding time values: ", timePoints)
-    display_main_menu()
+        tempK = 1/((1/298.15)+(1/3058.00)*np.log(thermRes/10000.0))
+        tempC = tempK - 273.15
+        roundedC = round(tempC,1)
+        return roundedC
 
-def temp_graph_generation(): # to generate scatter graph for temperature 
-    # using same set-lists from before
-    global temp
-    global timePoints
+
+    def temperture():
+        while True:
+            time.sleep(1)
+            tempCelsus = read_temp()
+            print(f'{tempCelsus}\N{DEGREE SIGN}C')
+            seven_segment(str(tempCelsus),0.8)
+    
+    temperture()
+
+def tgraph_generation(): # to generate scatter graph for temperature 
+    
     # counter for iteration
     t = 0
+    it = 0
+
+    def read_temp():
+            myArduino.set_pin_mode_analog_input(tempPin)
+            inValue = myArduino.analog_read(tempPin)
+            #convert analog
+            thermVolt = inValue[0]*(5/1023)
+            #find resistance
+            thermRes = (50000-10000*thermVolt)/thermVolt
+            #using steinhart equations
+
+            tempK = 1/((1/298.15)+(1/3058.00)*np.log(thermRes/10000.0))
+            tempC = tempK - 273.15
+            roundedC = round(tempC,1)
+            return roundedC
+
     while True: # once triggered...
         try:
+            time.sleep(1)
+            tempCelsus = read_temp()
             # add to iteration counter
             t = t + 1
-            # create scatter graph, with small 'blue' circles for each point
-            plt.scatter(timePoints, temp, marker = '.', color = 'blue')
-            # denote y and x axis labels
-            plt.ylabel("Temperature (°C)")
-            plt.xlabel("Time (HHMM)")
-            # denote title, with iteration
-            plt.title(f"Graph iteration for distance: {t}")
-            # denote save file name
-            plt.savefig(f"Temperature_Graph_{t}.png")
+            if t % 60 == 0:
+                it = it + 1
+                # create scatter graph, with small 'blue' circles for each point
+                plt.scatter(tempCelsus, t, marker = '.', color = 'blue')
+                # denote y and x axis labels
+                plt.ylabel("Temperature (°C)")
+                plt.xlabel("Time (HHMM)")
+                # denote title, with iteration
+                plt.title(f"Graph iteration for Temperature: {t}")
+                # denote save file name
+                plt.savefig(f"Temperature_Graph_{it}.png")
+            print(f'{tempCelsus}\N{DEGREE SIGN}C')
+            seven_segment(str(tempCelsus),0.8)
         # if exception were to occur...
         except Exception:
             print("error...")
