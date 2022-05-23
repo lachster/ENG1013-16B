@@ -31,8 +31,10 @@ def shift_reg_components(code):
         i += 1
     myArduino.digital_pin_write(clockpin,1)            
     myArduino.digital_pin_write(clockpin,0)
-while True:      
-    shift_reg_components([0,0,0,0,1,1,1,1])
-    time.sleep(0.5)
-
+      
+shift_reg_components([0,0,0,1,1,1,1,1])
+time.sleep(3)
+shift_reg_components([1,0,0,1,1,1,1,1])
+time.sleep(3)
+shift_reg_components([0,0,0,1,1,1,1,1])
    
