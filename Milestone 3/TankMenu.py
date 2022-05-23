@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mping
 from pymata4 import pymata4
 import math as np
+
 pin = '6344' # set the pin required to accsess the system
 #set all the pins on the arduino as global variables at the top of the file to easily be changed 
 triggerPin = 18
@@ -162,7 +163,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
         while True:
             #try:
                 # time.sleep used to dente the intervals per reading. At this stage, set to one per second, for graphing purposes
-                time.sleep(1)
+                
                 myArduino.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 # denote 'num' as the 'store' value
                 num = sonar_report()
@@ -171,19 +172,21 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                 if vol <= 0:
                     vol = 0.0
                 tempC = round(read_temp(),1)
-                print(f'{vol}L')
-                print(f'{tempC}\N{DEGREE SIGN}C')
+                print(f'current volume:{vol}L {state}')
+                print(f'current temp:{tempC}\N{DEGREE SIGN}C')
                 if i % 2 == 0:
                     seven_segment(f'{str(vol)}L',0.75)
                 else:
                     seven_segment(f'{str(tempC)}C',0.75)
+                
+                time.sleep(1)
 
                 i += 1
 
 
 
                 if vol < 0.5:
-                    print("Empty.")
+                    state = ("Empty.")
                     all_led_off()
                     led_light(flashingRedLED,0)
                     led_light(flashingYellowLED,0)
@@ -191,7 +194,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     buzzer(buzzer1,1)
                     #seven_segment('empty',1)
                 elif 0.5 < vol and vol <= 2:
-                    print("Near-Empty.")
+                    state = ("Near-Empty.")
                     all_led_off()
                     led_light(redLED,1)
                     led_light(flashingRedLED,0)
@@ -200,7 +203,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     buzzer(buzzer1,1)
                     #seven_segment('near empty',1)
                 elif 2 < vol and vol <= 5:
-                    print("Low.")
+                    state = ("Low.")
                     all_led_off()
                     led_light(yellowLED,1)
                    
@@ -208,13 +211,13 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     buzzer(buzzer1,0)
                     #seven_segment('low',1)
                 elif 5 < vol and vol <= 7 :
-                    print("Medium.")
+                    state = ("Medium.")
                     all_led_off()
                     motor(0,0)
                     buzzer(buzzer1,0)
                     #seven_segment('medium',1)
                 elif 7 < vol and vol <= 9:
-                    print("Near full.")
+                    state = ("Near full.")
                     all_led_off()
                     led_light(flashingRedLED,0)
                     led_light(redLED,1)
@@ -222,7 +225,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     buzzer(buzzer2,1)
                     #seven_segment('near full',1)
                 elif 9 < vol :
-                    print("Full.")
+                    state = ("Full.")
                     all_led_off()
                     
                     motor(0,5)
@@ -549,7 +552,7 @@ def seven_segment(output,displayTime):
 
             m += 1
 
-    if output.find('.') > 0: #if its the frist digit shouldnt be changed
+    if output.find('.') > 0 : #if its the frist digit shouldnt be changed
         decimal = output.find('.') 
         newCode = list(charLookup[output[decimal-1]])
         newCode[7] = '1'
@@ -610,9 +613,9 @@ def tempreture():
 
 
 #Useless intro, just for aesthetic
-#name = input("Welcome. Please Enter your name: ")
-#print("Hello,",name,". Nice to see you!")
-#seven_segment(f'hello {name}. nice to see you',1)
+name = input("Welcome. Please Enter your name: ")
+print("Hello,",name,". Nice to see you!")
+seven_segment(f'hello {name}. nice to see you',1)
 pin_entry()
 
 
