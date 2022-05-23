@@ -35,8 +35,8 @@ def setup_led():
 def blinking_led(led):
     myArduino.digital_pin_write(led,0)
 
-def led_on(led):
-    myArduino.digital_pin_write(led,1)
+def led_on(led,state):
+    myArduino.digital_pin_write(led,state)
 
 def led_off(led):
     myArduino.digital_pin_write(led,0)

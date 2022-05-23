@@ -139,6 +139,7 @@ def distance_view_current(): # to view current distance, reading straight from U
         return store[0]
     
     def sonar_setup(myArduino, triggerPin, echoPin): # what actually prints the values into the console
+        i = 0 
         while True:
             #try:
                 # time.sleep used to dente the intervals per reading. At this stage, set to one per second, for graphing purposes
@@ -150,8 +151,16 @@ def distance_view_current(): # to view current distance, reading straight from U
                 #print(num, 'cm')
                 
                 vol = round(10-(num/calibration),1)
+                tempC = round(read_temp(),1)
                 print(f'{vol}L')
-                seven_segment(f'{str(vol)}L',0.75)
+                print(f'{tempC}\N{DEGREE SIGN}C')
+                if i % 2 == 0:
+                    seven_segment(f'{str(vol)}L',0.75)
+                else:
+                    seven_segment(f'{str(tempC)}C',0.75)
+
+                i += 1
+
 
 
                 if vol < 0.5:
@@ -416,6 +425,8 @@ def seven_segment(output,displayTime):
     }
 
 
+
+
     myArduino._set_pin_mode(digit1,1 )
     myArduino._set_pin_mode(digit2,1 )
     myArduino._set_pin_mode(digit3,1 )
@@ -442,6 +453,8 @@ def seven_segment(output,displayTime):
             i += 1
         myArduino.digital_pin_write(clockpin,1)
         myArduino.digital_pin_write(clockpin,0)
+
+
 
     def four_shift_reg(word):   # to show multiple digits or charecters on the display at once
         i = 0
@@ -509,19 +522,23 @@ def motor(direction, speed):
     myArduino.pwm_write(pin,pwmSpeed)
 
 def read_temp():
-    myArduino.set_pin_mode_analog_input(tempPin)
-    inValue = myArduino.analog_read(tempPin)
-    #convert analog
-    thermVolt = inValue[0]*(5/1023)
-    #find resistance
-    thermRes = (50000-10000*thermVolt)/thermVolt
-    #using steinhart equations
+    try:
+        myArduino.set_pin_mode_analog_input(tempPin)
+        inValue = myArduino.analog_read(tempPin)
+        #convert analog
+        thermVolt = inValue[0]*(5/1023)
+        #find resistance
+        thermRes = (50000-10000*thermVolt)/thermVolt
+        #using steinhart equations
 
-    tempK = 1/((1/298.15)+(1/3058.00)*np.log(thermRes/10000.0))
-    tempC = tempK - 273.15
-    roundedC = round(tempC,1)
-    return roundedC
+        tempK = 1/((1/298.15)+(1/3058.00)*np.log(thermRes/10000.0))
+        tempC = tempK - 273.15
+        roundedC = round(tempC,1)
+        return roundedC
+    except:
+        return 20.0
 
+    
 
 def tempreture():
     while True:

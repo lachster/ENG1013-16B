@@ -14,31 +14,37 @@ pwmbuzzerpin = 11
 myArduino.set_pin_mode_digital_output(buzzerPin)
 myArduino.set_pin_mode_pwm_output(pwmbuzzerpin)
 
-
-def buzzer(duration):
-    myArduino.digital_pin_write(buzzerPin,1)
-    time.sleep(duration)
-    myArduino.digital_pin_write(buzzerPin,0)
-    time.sleep(duration)
-
-
 def pwm_buzzer(duration):
     myArduino.pwm_write(pwmbuzzerpin,1)
     time.sleep(duration)
     myArduino.pwm_write(pwmbuzzerpin,0)
     time.sleep(duration)
 
+
+
+
+    
+
+
+
+def buzzer(frequency, duration):
+    wait = int(time.time())
+    frequency = 1/(2*frequency)
+    while time.time() < (duration + wait):
+        myArduino.digital_pin_write(buzzerPin,1)
+        time.sleep(frequency)
+        myArduino.digital_pin_write(buzzerPin,0)
+        time.sleep(duration)
+
 def near_empty():
-    i = 0
-    while i < 10:
-        buzzer(0.2)
-        i += 1
+    buzzer(440,0.5)
+    buzzer(300,0.5)
+    
 
 def near_full():
-    i = 0
-    while i < 20:
-        buzzer(0.1)
-        i += 1
+    buzzer(500,0.5)
+    buzzer(700,0.5)
+
 
 def rapid_change():
     i = 0
@@ -50,5 +56,4 @@ def rapid_change():
 near_empty()
 time.sleep(5)
 near_full()
-time.sleep(5)
-rapid_change()
+

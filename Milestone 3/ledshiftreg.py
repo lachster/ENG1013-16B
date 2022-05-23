@@ -66,6 +66,52 @@ def seven_segment(output,displayTime):
         '.' : '00000001'
     }
 
+    charLookup1 = { # segment code for all charecters
+        '~' : '00000000',
+        ' ' : '00000000',
+        '0' : '11111100',
+        '1' : '01100000',
+        '2' : '11011010',
+        '3' : '11110010',
+        '4' : '01100110',
+        '5' : '10110110',
+        '6' : '10111110',
+        '7' : '11100000',
+        '8' : '11111110',
+        '9' : '11110110',
+        "A" : "11101110",
+        "B" : '00111110',
+        'C' : '00011010',
+        'D' : '01111010',
+        'E' : '10011110',
+        'F' : '10001110',
+        'G' : '10111100',
+        'H' : '01101110',
+        'I' : '01100000',
+        'J' : '01110000',
+        'K' : '00011110',
+        'L' : '00011100',
+        'M' : '00101011',
+        'N' : '00101010',
+        'O' : '00111010',
+        'P' : '11001110',
+        'Q' : '11100110',
+        'R' : '00001010',
+        'S' : '10110111',
+        'T' : '00011110',
+        'U' : '00111001',
+        'V' : '01111100',
+        'W' : '00111001',
+        'X' : '01101110',
+        'Y' : '01110110',
+        'Z' : '11011011',
+        '?' : '11000001',
+        '-' : '00000010',
+        '.' : '00000001'
+    }
+
+
+
     myArduino._set_pin_mode(digit1,1 )
     myArduino._set_pin_mode(digit2,1 )
     myArduino._set_pin_mode(digit3,1 )
@@ -92,6 +138,7 @@ def seven_segment(output,displayTime):
             i += 1
         myArduino.digital_pin_write(clockpin,1)            
         myArduino.digital_pin_write(clockpin,0)
+       
 
 
     def four_shift_reg(word):   # to show multiple digits or charecters on the display at once
