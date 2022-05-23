@@ -340,7 +340,7 @@ def vgraph_generation(): # to actually generate new graphs, to be stored in proj
                 # on each run, the 'time (t)' goes up by one (that's why it's set to 1.0 sleep)
                 t += 1
                 # once a minute has passed... 
-                if t % 10 == 0:
+                if t % 60 == 0:
                     t = 0
                     # add to iteration count
                     it += 1
@@ -352,7 +352,7 @@ def vgraph_generation(): # to actually generate new graphs, to be stored in proj
                     # denote title, marking the time past since start of graph generation
                     plt.title(f"Graph Iteration for Volume: {t} seconds on the {time.localtime()[2]}/{time.localtime()[1]}/{time.localtime()[0]} at {(str(time.localtime()[3]))+':'+str((time.localtime()[4]))}")
                     # denote save name, using iteration count, for recollection in 'View graph' tool
-                    plt.savefig(f"_Graph_{it}.png")
+                    plt.savefig(f"Graph_{it}.png")
                 # still printing the current values, so user can watch for issues. 
                 print(f'{vol}L')
             # if exception were to occur...
