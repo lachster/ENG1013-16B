@@ -355,7 +355,6 @@ def vgraph_generation(): # to actually generate new graphs, to be stored in proj
                     plt.savefig(f"_Graph_{it}.png")
                 # still printing the current values, so user can watch for issues. 
                 print(f'{vol}L')
-                
             # if exception were to occur...
             except Exception:
                 myArduino.shutdown()
@@ -365,21 +364,6 @@ def vgraph_generation(): # to actually generate new graphs, to be stored in proj
 def temperature_view_current(): #view current temperature.
     
     global tempPin
-
-    def read_temp():
-        myArduino.set_pin_mode_analog_input(tempPin)
-        inValue = myArduino.analog_read(tempPin)
-        #convert analog
-        thermVolt = inValue[0]*(5/1023)
-        #find resistance
-        thermRes = (50000-10000*thermVolt)/thermVolt
-        #using steinhart equations
-
-        tempK = 1/((1/298.15)+(1/3058.00)*np.log(thermRes/10000.0))
-        tempC = tempK - 273.15
-        roundedC = round(tempC,1)
-        return roundedC
-
 
     def temperture():
         while True:
@@ -398,10 +382,8 @@ def tgraph_generation(): # to generate scatter graph for temperature
     t = 0
     it = 0
 
-
-
     while True: # once triggered...
-      
+        try:
             time.sleep(1)
             tempCelsus = read_temp()
             # add to iteration counter
@@ -410,18 +392,20 @@ def tgraph_generation(): # to generate scatter graph for temperature
             t = t + 1
             if t % 60 == 0:
                 it = it + 1
-                # create scatter graph, with small 'blue' circles for each point
+                # create plot graph.
                 plt.plot(xpoint, ypoint)
                 # denote y and x axis labels
                 plt.ylabel("Temperature (°C)")
-                plt.xlabel("Time (HHMM)")
+                plt.xlabel("Time (s)")
                 # denote title, with iteration
-                plt.title(f"Graph iteration for Temperature: {t}")
+                plt.title(f"Graph iteration for Temperature: {t} seconds on the {time.localtime()[2]}/{time.localtime()[1]}/{time.localtime()[0]} at {(str(time.localtime()[3]))+':'+str((time.localtime()[4]))}")
                 # denote save file name
                 plt.savefig(f"Temperature_Graph_{it}.png")
             print(f'{tempCelsus}\N{DEGREE SIGN}C')
-            seven_segment(str(tempCelsus),0.8)
         # if exception were to occur...
+        except Exception:
+            myArduino.shutdown()
+
 
        
 
