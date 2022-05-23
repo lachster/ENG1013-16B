@@ -1,10 +1,6 @@
 import time
+while True:
 
-def buzzer(frequency, duration):
-    wait = int(time.time())
-    while time.time() < (duration + wait):
-        
-        time.sleep(frequency)
-
-buzzer(0.1,3)
-
+    print(time.localtime())
+    time.sleep(0.5)
+    print((str(time.localtime()[3]))+':'+str((time.localtime()[4])))

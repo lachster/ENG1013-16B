@@ -47,7 +47,7 @@ offSet = 2
 
 
 
-myArduino = pymata4.Pymata4(arduino_wait=4)
+myArduino = pymata4.Pymata4(arduino_wait=2)
 myArduino.set_pin_mode_digital_output(buzzer1)
 myArduino.set_pin_mode_digital_output(buzzer2)
 myArduino.set_pin_mode_digital_output(buzzer3)
@@ -313,7 +313,7 @@ def vgraph_generation(): # to actually generate new graphs, to be stored in proj
         return store[0]
 
 
-    def sonar_setup(myArduino, triggerPin, echoPin):
+    def sonar_setup(triggerPin, echoPin):
         # new variable for...
         # time (s)
         t = 0
@@ -333,23 +333,24 @@ def vgraph_generation(): # to actually generate new graphs, to be stored in proj
                 # time value on x-axis
                 xpoint.append(t)
                 # on each run, the 'time (t)' goes up by one (that's why it's set to 1.0 sleep)
-                t = t + 1
+                t += 1
                 # once a minute has passed... 
-                if t % 60 == 0:
+                if t % 10 == 0:
+                    t = 0
                     # add to iteration count
-                    it = it + 1
+                    it += 1
                     # plot values to graph
                     plt.plot(xpoint, ypoint)
                     # denote y and x axis labels
                     plt.ylabel("Tank Volume (L)")
                     plt.xlabel("Time (s)")
                     # denote title, marking the time past since start of graph generation
-                    plt.title(f"Graph Iteration for Volume: {t} seconds")
+                    plt.title(f"Graph Iteration for Volume: {t} seconds on the {time.localtime()[2]}/{time.localtime()[1]}/{time.localtime()[0]} at {(str(time.localtime()[3]))+':'+str((time.localtime()[4]))}")
                     # denote save name, using iteration count, for recollection in 'View graph' tool
                     plt.savefig(f"_Graph_{it}.png")
                 # still printing the current values, so user can watch for issues. 
                 print(f'{vol}L')
-                seven_segment(f'{str(vol)}L',0.75)
+                
             # if exception were to occur...
             except Exception:
                 myArduino.shutdown()
@@ -392,22 +393,10 @@ def tgraph_generation(): # to generate scatter graph for temperature
     t = 0
     it = 0
 
-    def read_temp():
-            myArduino.set_pin_mode_analog_input(tempPin)
-            inValue = myArduino.analog_read(tempPin)
-            #convert analog
-            thermVolt = inValue[0]*(5/1023)
-            #find resistance
-            thermRes = (50000-10000*thermVolt)/thermVolt
-            #using steinhart equations
 
-            tempK = 1/((1/298.15)+(1/3058.00)*np.log(thermRes/10000.0))
-            tempC = tempK - 273.15
-            roundedC = round(tempC,1)
-            return roundedC
 
     while True: # once triggered...
-        try:
+      
             time.sleep(1)
             tempCelsus = read_temp()
             # add to iteration counter
@@ -428,10 +417,8 @@ def tgraph_generation(): # to generate scatter graph for temperature
             print(f'{tempCelsus}\N{DEGREE SIGN}C')
             seven_segment(str(tempCelsus),0.8)
         # if exception were to occur...
-        except Exception:
-            print("error...")
-        
-        display_main_menu()
+
+       
 
 def end_program(): # used to just escape menu
     print("System shutdown.")
@@ -619,9 +606,9 @@ def tempreture():
 
 
 #Useless intro, just for aesthetic
-name = input("Welcome. Please Enter your name: ")
-print("Hello,",name,". Nice to see you!")
-seven_segment(f'hello {name}. nice to see you',1)
+#name = input("Welcome. Please Enter your name: ")
+#print("Hello,",name,". Nice to see you!")
+#seven_segment(f'hello {name}. nice to see you',1)
 pin_entry()
 
 
