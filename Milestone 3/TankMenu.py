@@ -172,12 +172,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                 if vol <= 0:
                     vol = 0.0
                 tempC = round(read_temp(),1)
-                print(f'current volume:{vol}L {state}')
-                print(f'current temp:{tempC}\N{DEGREE SIGN}C')
-                if i % 2 == 0:
-                    seven_segment(f'{str(vol)}L',0.75)
-                else:
-                    seven_segment(f'{str(tempC)}C',0.75)
+
                 
                 time.sleep(1)
 
@@ -233,6 +228,16 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     led_light(redLED,1)
                     buzzer(buzzer2,1)
                     #seven_segment('full',1)
+
+                print(f'current volume: {vol}L {state}')
+                print(f'current temp: {tempC}\N{DEGREE SIGN}C')
+                if i % 2 == 0:
+                    seven_segment(f'{str(vol)}L',0.75)
+                else:
+                    seven_segment(f'{str(tempC)}C',0.75)
+
+
+
 
             #except Exception: # if exception were to occur...
                 #myArduino.shutdown()
