@@ -324,7 +324,9 @@ def vgraph_generation(): # to actually generate new graphs, to be stored in proj
                 time.sleep(1.0)
                 myArduino.set_pin_mode_sonar(triggerPin, echoPin, sonar_callback, timeout=200000)
                 num = sonar_report()
-                vol = round(10-(num/calibration),1)
+                vol = round((10+offSet)-(num/calibration),1)
+                if vol <= 0:
+                    vol = 0.0
                 # The two lists from before are populated with...
                 # sensor value on y-axis
                 ypoint.append(vol)
@@ -384,6 +386,8 @@ def temperature_view_current(): #view current temperature.
 
 def tgraph_generation(): # to generate scatter graph for temperature 
     
+    xpoint = []
+    ypoint = []
     # counter for iteration
     t = 0
     it = 0
@@ -407,11 +411,13 @@ def tgraph_generation(): # to generate scatter graph for temperature
             time.sleep(1)
             tempCelsus = read_temp()
             # add to iteration counter
+            ypoint.append(tempCelsus)
+            xpoint.append(t)
             t = t + 1
             if t % 60 == 0:
                 it = it + 1
                 # create scatter graph, with small 'blue' circles for each point
-                plt.scatter(tempCelsus, t, marker = '.', color = 'blue')
+                plt.plot(xpoint, ypoint)
                 # denote y and x axis labels
                 plt.ylabel("Temperature (°C)")
                 plt.xlabel("Time (HHMM)")
