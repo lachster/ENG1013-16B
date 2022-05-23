@@ -277,9 +277,9 @@ def volume_view_lowest(): # the same as above, but now only showing the lowest v
 def volume_view_graph(): # to view a certain iteration of graph (make sure to know which iteration)
     i = int(input("Which Graph Iteration would you like to view? (denote with number of iteration): "))
     # if the chosen iteration exists...
-    if f'Distance_Graph_{i}.png' == True: 
+    if f'Volume_Graph_{i}.png' == True: 
         # open up the image, with the right iteration
-        image = mping.imread(f'Distance_Graph_{i}.png')
+        image = mping.imread(f'Volume_Graph_{i}.png')
         # show it.
         plt.imshow(image)
         plt.show()
@@ -347,7 +347,7 @@ def vgraph_generation(): # to actually generate new graphs, to be stored in proj
                     # denote title, marking the time past since start of graph generation
                     plt.title(f"Graph Iteration for Volume: {t} seconds on the {time.localtime()[2]}/{time.localtime()[1]}/{time.localtime()[0]} at {(str(time.localtime()[3]))+':'+str((time.localtime()[4]))}")
                     # denote save name, using iteration count, for recollection in 'View graph' tool
-                    plt.savefig(f"_Graph_{it}.png")
+                    plt.savefig(f"Volume_Graph_{it}.png")
                 # still printing the current values, so user can watch for issues. 
                 print(f'{vol}L')
             # if exception were to occur...
