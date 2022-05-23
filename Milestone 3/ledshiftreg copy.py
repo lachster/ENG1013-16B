@@ -1,4 +1,4 @@
-
+import time
 from pymata4 import pymata4
 """"
 
@@ -31,7 +31,8 @@ def shift_reg_components(code):
         i += 1
     myArduino.digital_pin_write(clockpin,1)            
     myArduino.digital_pin_write(clockpin,0)
-       
-shift_reg_components([0,0,0,1,1,1,1,1])
+while True:      
+    shift_reg_components([0,0,0,0,1,1,1,1])
+    time.sleep(0.5)
 
    
