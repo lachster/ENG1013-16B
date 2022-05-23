@@ -38,7 +38,11 @@ digit4 = 8
 
 #calibration factor that is set by cm of water rise per litre 
 #this assumes that the water rise is linear with the increase in volume
-calibration = 6
+calibration = 3.6
+#distance form the ultrasonic sensor to the fluid level at 10L
+offSet = 2
+
+
 
 myArduino = pymata4.Pymata4(arduino_wait=2)
 
@@ -153,7 +157,9 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                 # denote 'num' as the 'store' value
                 num = sonar_report()
                 
-                vol = round(10-(num/calibration),1)
+                vol = round((10+offSet)-(num/calibration),1)
+                if vol <= 0:
+                    vol = 0.0
                 tempC = round(read_temp(),1)
                 print(f'{vol}L')
                 print(f'{tempC}\N{DEGREE SIGN}C')
