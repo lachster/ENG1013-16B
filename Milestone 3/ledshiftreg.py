@@ -7,6 +7,12 @@ from pymata4 import pymata4
 """
 #set the conditions of the arduino () is the default 
 myArduino = pymata4.Pymata4(arduino_wait=2)
+
+class tank:
+    
+
+
+
 def seven_segment(output,displayTime):
 
 
