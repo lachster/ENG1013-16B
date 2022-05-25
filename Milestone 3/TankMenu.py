@@ -27,9 +27,9 @@ flashingYellowLED = 16
 flashingRedLED = 19
 motorFoward = 9
 motorBackwards = 10
-buzzer = 2
+buzzer = 3
 clockpin = 4
-ser = 3
+ser = 2
 tempPin = 0 # anolog pin
 digit1 = 5
 digit2 = 6 
@@ -128,13 +128,14 @@ def volume_view_current(): # to view current distance, reading straight from Ult
         myArduino.set_pin_mode_digital_output(blueLED)
         myArduino.set_pin_mode_digital_output(flashingYellowLED)
         myArduino.set_pin_mode_digital_output(flashingRedLED)
-        myArduino.set_pin_mode_digital_output(buzzer)
+        myArduino.set_pin_mode_pwm_output(buzzer)
         myArduino.digital_pin_write(flashingYellowLED,1)
         myArduino.digital_pin_write(flashingRedLED,1)
 
-    setup_led()
+    
 
     def led_light(led,state):
+        myArduino.digital_pin_write(led,state)
         myArduino.digital_pin_write(led,state) 
 
     def all_led_off():
@@ -169,6 +170,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
 
                 
                 time.sleep(1)
+                setup_led()
 
                 i += 1
 
@@ -180,7 +182,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     led_light(flashingRedLED,0)
                     led_light(flashingYellowLED,0)
                     motor(1,5)
-                    myArduino.digital_pin_write(buzzer,1)
+                    myArduino.pwm_write(buzzer,250)
                     #seven_segment('empty',1)
                 elif 0.5 < vol and vol <= 2:
                     state = ("Near-Empty.")
@@ -189,7 +191,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     led_light(flashingRedLED,0)
                     
                     motor(1,4)
-                    myArduino.digital_pin_write(buzzer,0)
+                    myArduino.pwm_write(buzzer,0)
                     #seven_segment('near empty',1)
                 elif 2 < vol and vol <= 5:
                     state = ("Low.")
@@ -197,13 +199,13 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     led_light(yellowLED,1)
                    
                     motor(1,2)
-                    myArduino.digital_pin_write(buzzer,0)
+                    myArduino.pwm_write(buzzer,0)
                     #seven_segment('low',1)
                 elif 5 < vol and vol <= 7 :
                     state = ("Medium.")
                     all_led_off()
                     motor(0,0)
-                    myArduino.digital_pin_write(buzzer,0)
+                    myArduino.pwm_write(buzzer,0)
                     #seven_segment('medium',1)
                 elif 7 < vol and vol <= 9:
                     state = ("Near full.")
@@ -211,7 +213,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     led_light(flashingRedLED,0)
                     led_light(redLED,1)
                     motor(0,3)
-                    myArduino.digital_pin_write(buzzer,1)
+                    myArduino.pwm_write(buzzer,100)
                     #seven_segment('near full',1)
                 elif 9 < vol :
                     state = ("Full.")
@@ -220,7 +222,7 @@ def volume_view_current(): # to view current distance, reading straight from Ult
                     motor(0,5)
                     led_light(flashingRedLED,0)
                     led_light(redLED,1)
-                    myArduino.digital_pin_write(buzzer,1)
+                    myArduino.pwm_write(buzzer,100)
                     #seven_segment('full',1)
 
                 print(f'current volume: {vol}L {state}')
@@ -412,8 +414,7 @@ def seven_segment(output,displayTime):
 
 
 
-    clockpin = 4
-    ser = 3
+    
     # delay between operations chnages brightness and is required to be smaller than threshold to prevent flicker
     delay = 0.001 
     
@@ -591,7 +592,7 @@ def tempreture():
 #Useless intro, just for aesthetic
 name = input("Welcome. Please Enter your name: ")
 print("Hello,",name,". Nice to see you!")
-seven_segment(f'hello {name}. nice to see you',1)
+seven_segment(f'hello {name} nice to see you',1)
 pin_entry()
 
 
